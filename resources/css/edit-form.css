@@ -320,3 +320,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
   .select select option {
     padding: 30px;
   }
+
+.edit-text-block {
+  color: #fff;
+}

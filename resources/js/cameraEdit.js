@@ -43,7 +43,7 @@ function convertSouthZeroToAzimuth(azimuth) {
 var cameraPoint = [6.83442, 52.43369]
 var targetPoint = [6.83342, 52.43469]
 
-let map = L.map('map', {
+let mapEdit = L.map('map', {
     center: [cameraPoint[1], cameraPoint[0]],
     zoom: 17
 });
@@ -51,7 +51,7 @@ let map = L.map('map', {
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="#">RoadLens</a>'
-}).addTo(map);
+}).addTo(mapEdit);
 
 
 var points = {
@@ -109,7 +109,7 @@ var options = {
     }
 }
 
-let marker = L.geotagPhoto.camera(points, options).addTo(map);
+let marker = L.geotagPhoto.camera(points, options).addTo(mapEdit);
 
 let fieldOfView = marker.getFieldOfView();
 let cameraLatLng = marker.getCameraLatLng();
@@ -169,7 +169,7 @@ latitude.addEventListener('input', function() {
 
     // marker.setTargetLatLng(newLatLng);
 
-    map.setView([latitude.value, longitude.value], 13);
+    mapEdit.setView([latitude.value, longitude.value], 17);
     // inputChanged = false;
 });
 
@@ -185,7 +185,7 @@ longitude.addEventListener('input', function() {
 
     // marker.setTargetLatLng(newLatLng);
 
-    map.setView([latitude.value, longitude.value], 13);
+    mapEdit.setView([latitude.value, longitude.value], 17);
     // inputChanged = false;
 });
 
