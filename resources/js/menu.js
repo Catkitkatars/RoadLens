@@ -7,7 +7,7 @@ $(document).on('click','.js-menu_toggle.closed',function(e){
 	e.preventDefault(); $('.list_load, .list_item').stop();
 	$(this).removeClass('closed').addClass('opened');
 
-	$('.side_menu').css({ 'left':'0px' });
+	$('.side_menu').css({ 'right':'0px' });
 
 	var count = $('.list_item').length;
 	$('.list_load').slideDown( (count*.6)*100 );
@@ -27,7 +27,7 @@ $(document).on('click','.js-menu_toggle.opened',function(e){
 	e.preventDefault(); $('.list_load, .list_item').stop();
 	$(this).removeClass('opened').addClass('closed');
 
-	$('.side_menu').css({ 'left':'-250px' });
+	$('.side_menu').css({ 'right':'-250px' });
 
 	var count = $('.list_item').length;
 	$('.list_item').css({
