@@ -1,4 +1,4 @@
-function calculateNewLatLng(cameraLatLng, distance, bearing) {
+export function calculateNewLatLng(cameraLatLng, distance, bearing) {
     const radiusEarth = 6371000;
 
     const lat1 = cameraLatLng.lat * Math.PI / 180;
@@ -15,7 +15,7 @@ function calculateNewLatLng(cameraLatLng, distance, bearing) {
 }
 
 
-function convertSouthZeroToAzimuth(azimuth) {
+export function convertSouthZeroToAzimuth(azimuth) {
     azimuth -= 180;
 
     if (azimuth < -180) {

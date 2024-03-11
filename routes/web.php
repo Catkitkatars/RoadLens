@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Map;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
 
-Route::get('/edit', function () {
-    return view('edit');
-});
 
+Route::get('/map/{latitude}/{longitude}/{zoom}', [Map::class, 'showMap']);
+
+Route::get('/edit/{latitude}/{longitude}/{zoom}', [Map::class, 'showAddPage']);
+
+Route::post('/edit/submit', [Map::class, 'showPost']);
+
+Route::get('/edit/{uuid}', [Map::class, 'showEditPage']);

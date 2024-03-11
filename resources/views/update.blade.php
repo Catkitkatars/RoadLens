@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-geotag-photo@0.5.1/dist/Leaflet.GeotagPhoto.css" />
     <link href="{{ asset('dist/css/styles.css') }}" rel="stylesheet">
-    <link rel="icon" href="images/siteImg/RoadLensOnWebWhite.png">
+    <link rel="icon" href="/dist/images/siteImg/RoadLensOnWebWhite.png">
     <title>RoadLens</title>
 </head>
 
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <a href="#" class="header-logo">
-                <img src="images/siteImg/RoadLensOnWebWhite.png" alt="logo">
+                <img src="/dist/images/siteImg/RoadLensOnWebWhite.png" alt="logo">
                 <h1>RoadLens</h1>
             </a>
         </div>
@@ -59,6 +59,12 @@
                     </div>
                 </div>
                 <div class="flex-form">
+                    <div class="edit-text-block mb-3">
+                        <p>id: </p>
+                    </div>
+                    <div class="edit-text-block mb-3">
+                        <p>uuid:</p>
+                    </div>
                     <div class="select">
                         <label class="select-label" for="type">Страна:</label><br>
                         <select name="type" id="type">
@@ -164,10 +170,6 @@
                         </div>
                         <div class="edit-submit">
                             <a href="#">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
                                 Отправить
                             </a>
                         </div>

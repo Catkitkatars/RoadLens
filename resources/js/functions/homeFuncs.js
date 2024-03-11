@@ -45,14 +45,19 @@ export function addInfoBlock(object) {
                 <h5>${object.properties.lastUpdate}</h5>
             </div>
             <div class="edit-submit">
-                <a href="#">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <a href="localhost:8080/edit/${object.properties.id}">
                     Изменить
                 </a>
             </div>
         </div>
     </div>`;
+}
+
+
+export function getCenterAndZoom(map) {
+
+    let center = map.getCenter();
+    let zoom = map.getZoom();
+
+    return `${center.lat.toFixed(6)}/${center.lng.toFixed(6)}/${zoom}`;
 }

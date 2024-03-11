@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-geotag-photo@0.5.1/dist/Leaflet.GeotagPhoto.css" />
     <link href="{{ asset('dist/css/styles.css') }}" rel="stylesheet">
-    <link rel="icon" href="images/siteImg/RoadLensOnWebWhite.png">
+    <link rel="icon" href="/dist/images/siteImg/RoadLensOnWebWhite.png">
     <title>RoadLens</title>
 </head>
 
@@ -20,7 +20,7 @@
         
         <div class="header-contaner">
             <a href="#" class="header-logo">
-                <img src="images/siteImg/RoadLensOnWebWhite.png" alt="logo">
+                <img src="/dist/images/siteImg/RoadLensOnWebWhite.png" alt="logo">
                 <h1>RoadLens</h1>
             </a>
             <div class="side_menu">
@@ -63,6 +63,11 @@
 
     <footer></footer>
 
+    <script>
+        let latitude = {{ $latitude }};
+        let longitude = {{ $longitude }};
+        let zoom = {{ $zoom }};
+    </script>
     <script type="module" src="{{ asset('dist/js/home.js') }}"></script>
 </body>
 </html>

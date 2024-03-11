@@ -1,43 +1,8 @@
 import L from 'leaflet';
 import 'leaflet-geotag-photo';
-// import {calculateNewLatLng, convertSouthZeroToAzimuth} from './getPersonalDetails.js'
-
-// Настроить импорт-экспорт
-
-function calculateNewLatLng(cameraLatLng, distance, bearing) {
-    const radiusEarth = 6371000;
-
-    const lat1 = cameraLatLng.lat * Math.PI / 180;
-    const lng1 = cameraLatLng.lng * Math.PI / 180;
-    const brng = bearing * Math.PI / 180;
-
-    const lat2 = Math.asin(Math.sin(lat1) * Math.cos(distance / radiusEarth) +
-        Math.cos(lat1) * Math.sin(distance / radiusEarth) * Math.cos(brng));
-
-    const lng2 = lng1 + Math.atan2(Math.sin(brng) * Math.sin(distance / radiusEarth) * Math.cos(lat1),
-        Math.cos(distance / radiusEarth) - Math.sin(lat1) * Math.sin(lat2));
-
-    return L.latLng(lat2 * 180 / Math.PI, lng2 * 180 / Math.PI);
-}
-
-
-function convertSouthZeroToAzimuth(azimuth) {
-    azimuth -= 180;
-
-    if (azimuth < -180) {
-        azimuth += 360;
-    } else if (azimuth >= 180) {
-        azimuth -= 360;
-    }
-
-    return azimuth;
-}
-
-
-//==========================
-
-
-
+import {calculateNewLatLng, convertSouthZeroToAzimuth} from './functions/GeotagAddFunctions.js';
+import {options} from './features/editFeatures.js';
+import Choices from 'choices.js';
 
 
 var cameraPoint = [6.83442, 52.43369]
@@ -71,41 +36,6 @@ var points = {
             coordinates: targetPoint
         }
         ]
-    }
-}
-
-var options = {
-    draggable: true,
-    angleMarker: true, 
-    control: false,
-    cameraIcon: L.icon({
-        iconUrl: '../images/main-pin.png',
-        iconSize: [38, 38],
-        iconAnchor: [19, 35]
-    }),
-    targetIcon: L.icon({
-        iconUrl: '../images/marker.svg',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-    }),
-    
-    angleIcon: L.icon({
-        iconUrl: '../images/marker.svg',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-    }),
-    outlineStyle: {
-        color: '#03e9f4',
-        opacity: .3,
-        weight: 2,
-        dashArray: '1, 1',
-        lineCap: 'round',
-        lineJoin: 'round'
-    },
-    fillStyle: {
-        weight: 0,
-        fillOpacity: 0.3,
-        fillColor: '#032b2d'
     }
 }
 
@@ -158,35 +88,11 @@ longitude.addEventListener('change', function (event){
 })
 
 latitude.addEventListener('input', function() {
-    // inputChanged = true;
-    
-
-    // let latLng = L.latLng(latitude.value, longitude.value);
-    // let dist = distance.value; 
-    // let bearing = convertSouthZeroToAzimuth(direction.value) 
-
-    // let newLatLng = calculateNewLatLng(latLng, dist, bearing);
-
-    // marker.setTargetLatLng(newLatLng);
-
     mapEdit.setView([latitude.value, longitude.value], 17);
-    // inputChanged = false;
 });
 
 longitude.addEventListener('input', function() {
-    // inputChanged = true;
-    
-
-    // let latLng = L.latLng(latitude.value, longitude.value);
-    // let dist = distance.value; 
-    // let bearing = convertSouthZeroToAzimuth(direction.value) 
-
-    // let newLatLng = calculateNewLatLng(latLng, dist, bearing);
-
-    // marker.setTargetLatLng(newLatLng);
-
     mapEdit.setView([latitude.value, longitude.value], 17);
-    // inputChanged = false;
 });
 
 
@@ -251,3 +157,53 @@ marker.on('change', function (event) {
         distance.value = Math.round(fieldOfView.properties.distance);
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    let selectCountry = () => {
+        let elemCountry = document.getElementById('countries');
+        let choicesCountry = new Choices(elemCountry, {
+            allowHTML: true,
+            searchResultLimit: 1,
+            searchFields: ['label'],
+            itemSelectText: 'Выбрать',
+        });
+    }
+    selectCountry();
+
+    let selectRegion = () => {
+        let elemRegion = document.getElementById('regions');
+        let choicesRegion = new Choices(elemRegion, {
+            allowHTML: true,
+            searchResultLimit: 1,
+            searchFields: ['label'],
+            itemSelectText: 'Выбрать',
+        });
+    }
+    selectRegion();
+
+    let selectType = () => {
+        let elemType = document.getElementById('type');
+        let choicesType = new Choices(elemType, {
+            allowHTML: true,
+            searchResultLimit: 1,
+            searchFields: ['label'],
+            itemSelectText: 'Выбрать',
+        });
+    }
+    selectType();
+
+    let selectModel = () => {
+        let elemModel = document.getElementById('model');
+        let choicesModel= new Choices(elemModel, {
+            allowHTML: true,
+            searchResultLimit: 1,
+            searchFields: ['label'],
+            itemSelectText: 'Выбрать',
+        });
+    }
+    selectModel();
+
+
+});
+
+

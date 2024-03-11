@@ -47,6 +47,10 @@ body {
 	overflow-x: hidden; 
 }
 
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+    background-color: #243b55;
+}
+
 ::-webkit-scrollbar{
     width: 8px;          
 }
@@ -130,8 +134,8 @@ header {
 }
 .section_camera_info {
 	position: absolute;
-	left: -500px;
-	width: 500px;
+	left: -450px;
+	width: 450px;
 	height: 95vh;
 	z-index: 1001;
 	background: linear-gradient(#141e30, #243b55);
@@ -170,10 +174,11 @@ header {
     height: 95vh !important;
 }
 .button-add {
+	background-color: #243b55;
 	transition: .3s;
 }
 .button-add:hover {
-	background-color: #243b55;
+	background-color: #42556c;
 }
 
 /* MENU */
@@ -184,7 +189,7 @@ header {
     display: inline-block;
     padding: 10px 20px;
     color: #fff !important;
-	background-color: #141e30;
+	background-color: #243b55;
     font-size: 16px;
     text-decoration: none;
     text-transform: uppercase;
@@ -193,6 +198,11 @@ header {
     margin-top: 40px;
     letter-spacing: 4px;
 	cursor: pointer;
+	transition: .3s;
+}
+
+.button-add:hover {
+	background-color: #42556c;
 }
 a,
 .side_menu {
