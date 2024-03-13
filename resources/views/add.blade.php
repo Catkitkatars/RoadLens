@@ -67,7 +67,7 @@
                 <div class="flex-form">
                     <div class="select">
                         <label class="select-label" for="countries">Страна:</label><br>
-                        <select name="countries" id="countries" class="">
+                        <select name="country" id="countries" class="">
                             <option value="">--Выберите страну--</option>
                             <option value="1">Россия</option>
                             <option value="2">Азербайджан</option>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="select">
                         <label class="select-label" for="regions">Регион:</label><br>
-                        <select name="regions" id="regions" class="">
+                        <select name="region" id="regions" class="">
                             <option value="">--Выберите регион--</option>
                             <option value="1">1 Республика Адыгея (Адыгея)</option>
                             <option value="2">2 Республика Башкортостан</option>
@@ -181,8 +181,8 @@
                         <label class="select-label" for="type">Тип:</label><br>
                         <select name="type" id="type" class="">
                             <option value="">--Выберите тип--</option>
-                            <option value="1">Маломощный</option>
-                            <option value="2">Радар</option>
+                            <option value="1">Безрадарный(не шумит)</option>
+                            <option value="2">Радарный(шумит)</option>
                             <option value="3">Видеоблок</option>
                             <option value="4">Контроль остановки</option>
                             <option value="5">Муляж</option>
@@ -205,13 +205,23 @@
                     </div>
                     
                     <div class="input-box">
-                        <input id="latitude" class="input-fixed" type="text" name="latitude" required="">
+                        <input id="latitude" class="input-fixed" type="text" name="camera_latitude" required="">
                         <label>Широта</label>
                     </div>
                     <div class="input-box">
-                        <input id="longitude"class="input-fixed" type="text" name="longitude" required="">
+                        <input id="longitude"class="input-fixed" type="text" name="camera_longitude" required="">
                         <label>Долгота</label>
                     </div>
+
+                    <div class="input-box" style="display: none">
+                        <input id="target_latitude" class="input-fixed" type="text" name="target_latitude" required="">
+                        <label>Широта таргет</label>
+                    </div>
+                    <div class="input-box" style="display: none">
+                        <input id="target_longitude"class="input-fixed" type="text" name="target_longitude" required="">
+                        <label>Долгота таргет</label>
+                    </div>
+
                     <div class="input-box">
                         <input id="direction" class="input-fixed" type="text" name="direction" required="">
                         <label>Направление</label>
@@ -228,11 +238,11 @@
                         <label>Скорость</label>
                         <div class="speed-box">
                             <div class="input-box">
-                                <input id="speed-car" class="input-fixed" type="text" name="car_speed">
+                                <input id="speed-car" class="input-fixed" type="text" name="car_speed" required="">
                                 <label>Легковой</label>
                             </div>
                             <div class="input-box">
-                                <input id="speed-truck" class="input-fixed" type="text" name="truck_speed">
+                                <input id="speed-truck" class="input-fixed" type="text" name="truck_speed" required="">
                                 <label>Грузовой</label>
                             </div>
                         </div>
@@ -244,18 +254,18 @@
                     <div class="edit-text-block">
                         <p>Модератор:</p>
                     </div>
-                    <div class="chekbox-block">
+                        <div class="chekbox-block">
                             <div class="container">
                                 <ul class="ks-cboxtags">
-                                    <li><input type="checkbox" id="checkboxOne" value="Rear" name="1"><label for="checkboxOne">В спину</label></li>
-                                    <li><input type="checkbox" id="checkboxTwo" name="2" value="Markup"><label for="checkboxTwo">Разметка</label></li>
-                                    <li><input type="checkbox" id="checkboxThree" name="3" value="Crosswalk"><label for="checkboxThree">Пешеходный</label></li>
-                                    <li><input type="checkbox" id="checkboxFour" name="4" value="Roadside"><label for="checkboxFour">Обочина</label></li>
-                                    <li><input type="checkbox" id="checkboxFive" name="5" value="Bus lane"><label for="checkboxFive">Автобусная</label></li>
-                                    <li><input type="checkbox" id="checkboxSix" name="6" value="Stop monitoring"><label for="checkboxSix">Контроль остановки</label></li>
-                                    <li><input type="checkbox" id="checkboxSeven" name="7" value="Cargo control"><label for="checkboxSeven">Грузовой контроль</label></li>
-                                    <li><input type="checkbox" id="checkboxEight" name="8" value="Additional"><label for="checkboxEight">Дополнительный</label></li>
-                                    <li><input type="checkbox" id="checkboxNine" name="9" value="Verified" checked><label for="checkboxNine" >Подтвержден</label></li>
+                                    <li><input type="checkbox" id="checkboxNine" name="flags[verified]" value="1" checked><label for="checkboxNine" >Подтвержден</label></li>
+                                    <li><input type="checkbox" id="checkboxOne" name="flags[rear]" value="2" ><label for="checkboxOne">В спину</label></li>
+                                    <li><input type="checkbox" id="checkboxTwo" name="flags[markup]" value="3"><label for="checkboxTwo">Разметка</label></li>
+                                    <li><input type="checkbox" id="checkboxThree" name="flags[crosswalk]" value="4"><label for="checkboxThree">Пешеходный</label></li>
+                                    <li><input type="checkbox" id="checkboxFour" name="flags[roadside]" value="5"><label for="checkboxFour">Обочина</label></li>
+                                    <li><input type="checkbox" id="checkboxFive" name="flags[bus_line]" value="6"><label for="checkboxFive">Автобусная</label></li>
+                                    <li><input type="checkbox" id="checkboxSix" name="flags[stop_monitoring]" value="7"><label for="checkboxSix">Контроль остановки</label></li>
+                                    <li><input type="checkbox" id="checkboxSeven" name="flags[cargo_control]" value="8"><label for="checkboxSeven">Грузовой контроль</label></li>
+                                    <li><input type="checkbox" id="checkboxEight" name="flags[additional]" value="9"><label for="checkboxEight">Дополнительный</label></li>
                                 </ul>
                             </div>
                         </div>
@@ -264,11 +274,6 @@
                                 Добавить
                             </button>
                         </div>
-                    <!-- <h5 class="form-block-name">Flags</h5>
-                    <div class="flex-block flags">
-
-                        
-                    </div> -->
                 </div>
             </form>
             </section>

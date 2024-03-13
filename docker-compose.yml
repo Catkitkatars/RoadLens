@@ -32,7 +32,7 @@ services:
     volumes:
       - ./tmp/db:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: road_lens
+      MYSQL_DATABASE: roadlens
       MYSQL_ROOT_PASSWORD: root
     ports:
       - 8081:3306

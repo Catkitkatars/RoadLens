@@ -16,6 +16,8 @@ use App\Http\Controllers\Map;
 
 
 
+Route::get('/', [Map::class, 'showTemplate']);
+
 Route::get('/map/{latitude}/{longitude}/{zoom}', [Map::class, 'showMap']);
 
 Route::get('/edit/{latitude}/{longitude}/{zoom}', [Map::class, 'showAddPage']);

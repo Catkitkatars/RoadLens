@@ -66,7 +66,8 @@ input::placeholder {
 
 ul.ks-cboxtags {
     list-style: none;
-    padding: 20px;
+    padding-top: 20px;
+    padding-left: 0;
 }
 ul.ks-cboxtags li{
   display: inline;
