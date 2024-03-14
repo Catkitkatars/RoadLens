@@ -71,56 +71,30 @@ class RoadLens extends Model
         $validatedData = $validator->validated();
 
         $validatedData['uuid'] = RoadLens::newUniqueId();
+        $validatedData['user'] = 'admin';
+
 
         if(isset($validatedData['flags'])) {
             $associativeArrayToString = implode(',', array_values($validatedData['flags']));
             $validatedData['flags'] = $associativeArrayToString;
-
-
+        
             return RoadLens::create($validatedData);
-            // return DB::table($this->table)->insert([
-            //     'uuid' => $uuid,
-            //     'country' => $validatedData['country'],
-            //     'region' => $validatedData['region'],
-            //     'type' => $validatedData['type'],
-            //     'model' => $validatedData['model'],
-            //     'camera_latitude' => $validatedData['camera_latitude'],
-            //     'camera_longitude' => $validatedData['camera_longitude'],
-            //     'target_latitude' => $validatedData['target_latitude'],
-            //     'target_longitude' => $validatedData['target_longitude'],
-            //     'direction' => $validatedData['direction'],
-            //     'distance' => $validatedData['distance'],
-            //     'angle' => $validatedData['angle'],
-            //     'car_speed' => $validatedData['car_speed'],
-            //     'truck_speed' => $validatedData['truck_speed'],
-            //     'source' => $validatedData['source'],
-            //     'flags' => $associativeArrayToString,
-            // ]);
         }
 
 
         return RoadLens::create($validatedData);
+    }
 
-        //========================
-        // Что делаем если флаги вообще не переданы
-        //========================
+    public function getCameras($request) {
+        $northEastLat = $request->input('northEastLat');
+        $northEastLng = $request->input('northEastLng');
+        $southWestLat = $request->input('southWestLat');
+        $southWestLng = $request->input('southWestLng');
 
-        // return DB::table($this->table)->insert([
-        //     'uuid' => $uuid,
-        //     'country' => $validatedData['country'],
-        //     'region' => $validatedData['region'],
-        //     'type' => $validatedData['type'],
-        //     'model' => $validatedData['model'],
-        //     'camera_latitude' => $validatedData['camera_latitude'],
-        //     'camera_longitude' => $validatedData['camera_longitude'],
-        //     'target_latitude' => $validatedData['target_latitude'],
-        //     'target_longitude' => $validatedData['target_longitude'],
-        //     'direction' => $validatedData['direction'],
-        //     'distance' => $validatedData['distance'],
-        //     'angle' => $validatedData['angle'],
-        //     'car_speed' => $validatedData['car_speed'],
-        //     'truck_speed' => $validatedData['truck_speed'],
-        //     'source' => $validatedData['source'],
-        // ]);
+        $cameras = RoadLens::whereBetween('camera_latitude', [$southWestLat, $northEastLat])
+                            ->whereBetween('camera_longitude', [$southWestLng, $northEastLng])
+                            ->get();
+
+        return $cameras;
     }
 }

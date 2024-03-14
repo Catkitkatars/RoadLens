@@ -1,3 +1,33 @@
+import {getCenterAndZoom} from '../functions/homeFuncs.js';
+
+export let CustomControl = L.Control.extend({
+    options: {
+        position: 'bottomright' 
+    },
+
+    onAdd: function(map) {
+        let container = L.DomUtil.create('div', 'addButton');
+
+        let button = L.DomUtil.create('a', 'button-add', container);
+        button.innerHTML = 'Добавить камеру';
+
+    map.on('move', function() {
+        updateLink(map);
+    });
+
+    function updateLink(map) {
+
+        let link = 'http://localhost:8080/edit/' + getCenterAndZoom(map);
+
+        button.setAttribute('href', link);
+    }
+
+        updateLink(map);
+        return container; 
+    }
+});
+
+
 export let pointsCollection = {
     point1: {
         id: 1,
@@ -56,7 +86,7 @@ export let pointsCollection = {
     }
 }
 
-export const options = {
+export let options = {
     draggable: false,
     control: false,
     cameraIcon: L.icon({
@@ -89,3 +119,26 @@ export const options = {
         fillColor: '#032b2d'
     }
 }
+
+
+export let cameraTypeAndModelData = [
+    [
+        'Безрадарный(не шумит)',
+        'Радарный(шумит)',
+        'Видеоблок',
+        'Контроль остановки',
+        'Муляж',
+        'Контроль светофора',
+        'Мобильная камера',
+    ],
+    [
+        'Кордон',
+        'Арена',
+        'Крис',
+        'Скат',
+        'Интегра-КДД',
+        'Мангуст',
+        'Азимут',
+    ],
+    
+];

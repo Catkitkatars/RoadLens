@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('angle');
             $table->string('car_speed');
             $table->string('truck_speed');
+            $table->string('user')->default('admin');
             $table->string('source');
             $table->set('flags', [
                 '1', 

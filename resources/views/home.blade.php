@@ -13,6 +13,7 @@
     <link href="{{ asset('dist/css/styles.css') }}" rel="stylesheet">
     <link rel="icon" href="/dist/images/siteImg/RoadLensOnWebWhite.png">
     <title>RoadLens</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>

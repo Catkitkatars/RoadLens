@@ -35,30 +35,10 @@ class Map extends Controller
     public function showPost(Request $request) {
 
         
-        // dd($uuid);
         $roadLens = new RoadLens();
 
-        dd($roadLens->addCamera($request));
-
-        
-        // DB::table('russia')->insert([
-        //     'uuid' => $uuid,
-        //     'country' => $request->input('country'),
-        //     'region' => $request->input('country'),
-        //     'type' => $request->input('country'),
-        //     'model' => $request->input('country'),
-        //     'camera_latitude' => $request->input('country'),
-        //     'camera_longitude' => $request->input('country'),
-        //     'target_latitude' => $request->input('country'),
-        //     'target_longitude' => $request->input('country'),
-        //     'direction' => $request->input('country'),
-        //     'distance' => $request->input('country'),
-        //     'angle' => $request->input('country'),
-        //     'car_speed' => $request->input('country'),
-        //     'truck_speed' => $request->input('country'),
-        //     'source' => $request->input('country'),
-        //     'flags' => ['1', '2'], // Значения флагов
-        // ]);
+        $roadLens->addCamera($request);
+        return redirect('/');
     }
 
     public function showEditPage($uuid) {
@@ -66,5 +46,48 @@ class Map extends Controller
         // Ищем в базе элемент с таким uuid 
         // Получаем
         // Вызваем view куда передаем данные о элементе и добавляем их в поля ввода
+    }
+
+    public function getCamerasInBounds(Request $request){
+
+        $roadlens = new RoadLens();
+
+        $camerasInBounds = $roadlens->getCameras($request);
+
+        $cameras = [];
+
+        foreach ($camerasInBounds as $point) {
+            $cameraObject = [
+                'type' => 'Feature',
+                'properties' => [
+                    'uuid' => $point['uuid'],
+                    'type' => $point['type'],
+                    'model' => $point['model'],
+                    'angle' => $point['angle'],
+                    'car_speed' => $point['car_speed'],
+                    'truck_speed' => $point['truck_speed'],
+                    'user' => $point['user'],
+                    'dateCreate' => date('d.m.Y', strtotime($point['created_at'])),
+                    'lastUpdate' => date('d.m.Y', strtotime($point['updated_at'])),
+                ],
+                'geometry' => [
+                    'type' => 'GeometryCollection',
+                    'geometries' => [
+                        [
+                            'type' => 'Point',
+                            'coordinates' => [$point['camera_longitude'], $point['camera_latitude']]
+                        ],
+                        [
+                            'type' => 'Point',
+                            'coordinates' => [$point['target_longitude'], $point['target_latitude']]
+                        ]
+                    ]
+                ]
+            ];
+
+            $cameras[] = $cameraObject;
+            }
+
+        return response()->json($cameras);
     }
 }

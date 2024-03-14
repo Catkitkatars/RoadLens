@@ -18,6 +18,8 @@ use App\Http\Controllers\Map;
 
 Route::get('/', [Map::class, 'showTemplate']);
 
+Route::post('/getCameras', [Map::class, 'getCamerasInBounds']);
+
 Route::get('/map/{latitude}/{longitude}/{zoom}', [Map::class, 'showMap']);
 
 Route::get('/edit/{latitude}/{longitude}/{zoom}', [Map::class, 'showAddPage']);
