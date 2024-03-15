@@ -44,7 +44,7 @@ class RoadLens extends Model
     {
 
         $validator = Validator::make($request->all(), [
-            'country' => 'required|numeric|between:1,14',
+            'country' => 'required|numeric|between:1,15',
             'region' => 'required|numeric|between:1,85',
             'type' => 'required|numeric|between:1,7',
             'model' => 'required|numeric|between:1,7',

@@ -1,25 +1,28 @@
 import L from 'leaflet';
 import 'leaflet-geotag-photo';
 import {calculateNewLatLng, convertSouthZeroToAzimuth} from './functions/GeotagAddFunctions.js';
-import {options} from './features/editFeatures.js';
+import {fetchDataAndDisplayMarkers, updateMapData} from './functions/homeFuncs.js';
+import {cameraTypeAndModelData, countries, regions} from './features/homeFeatures.js';
+import {options, selectOptions} from './features/editFeatures.js';
 import Choices from 'choices.js';
 
 
-var cameraPoint = [6.83442, 52.43369]
-var targetPoint = [6.83342, 52.43469]
+let cameraPoint = [parseFloat(longitude.value), parseFloat(latitude.value)]
+let targetCoords = calculateNewLatLng(L.latLng(latitude.value, longitude.value), 300, 90);
+let targetPoint = [targetCoords.lng, targetCoords.lat]
 
 let mapEdit = L.map('map', {
     center: [cameraPoint[1], cameraPoint[0]],
-    zoom: 17
+    zoom: 16
 });
-
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="#">RoadLens</a>'
 }).addTo(mapEdit);
 
+fetchDataAndDisplayMarkers(mapEdit, null);
 
-var points = {
+let points = {
     type: 'Feature',
     properties: {
         angle: 20
@@ -113,15 +116,14 @@ angle.addEventListener('input', function (event){
         marker.setAngle(Number(this.value));
     }
     
-    console.log("ширина луча")
     inputChanged = false;
 })
 
 distance.addEventListener('input', function (event){
     inputChanged = true;
 
-    let dist = distance.value; // дистанция в метрах
-    let bearing = convertSouthZeroToAzimuth(direction.value)  // направление в градусах
+    let dist = distance.value; 
+    let bearing = convertSouthZeroToAzimuth(direction.value)  
 
     let newLatLng = calculateNewLatLng(marker.getCameraLatLng(), dist, bearing);
 
@@ -139,8 +141,8 @@ direction.addEventListener('input', function (event){
         direction.value = 0;
     }
 
-    let dist = distance.value; // дистанция в метрах
-    let bearing = convertSouthZeroToAzimuth(direction.value)  // направление в градусах
+    let dist = distance.value; 
+    let bearing = convertSouthZeroToAzimuth(direction.value) 
 
     let newLatLng = calculateNewLatLng(marker.getCameraLatLng(), dist, bearing);
 
@@ -173,53 +175,50 @@ marker.on('change', function (event) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    let selectCountry = () => {
-        let elemCountry = document.getElementById('countries');
-        let choicesCountry = new Choices(elemCountry, {
-            silent: true,
-            allowHTML: true,
-            searchResultLimit: 1,
-            searchFields: ['label'],
-            itemSelectText: 'Выбрать',
-        });
-    }
-    selectCountry();
 
-    let selectRegion = () => {
-        let elemRegion = document.getElementById('regions');
-        let choicesRegion = new Choices(elemRegion, {
-            silent: true,
-            allowHTML: true,
-            searchResultLimit: 3,
-            searchFields: ['label'],
-            itemSelectText: 'Выбрать',
-        });
-    }
-    selectRegion();
+    //Add Choices on four <selectors>
 
-    let selectType = () => {
-        let elemType = document.getElementById('type');
-        let choicesType = new Choices(elemType, {
-            allowHTML: true,
-            searchResultLimit: 1,
-            searchFields: ['label'],
-            itemSelectText: 'Выбрать',
-        });
-    }
-    selectType();
+    new Choices("#selectCountries", selectOptions)
+            .setChoices(countries, 'value', 'label')
+            .setChoiceByValue('')
 
-    let selectModel = () => {
-        let elemModel = document.getElementById('model');
-        let choicesModel= new Choices(elemModel, {
-            allowHTML: true,
-            searchResultLimit: 1,
-            searchFields: ['label'],
-            itemSelectText: 'Выбрать',
-        });
-    }
-    selectModel();
+    let selectRegions = new Choices("#selectRegions", selectOptions)
+                                .setChoices([{ value: '', label: '--Выберите регион--' }], 'value', 'label')
+                                .setChoiceByValue('')
 
+    selectCountries.addEventListener('change',function(event) {
+        let selectedValue = event.target.value;
+    
+        if(selectedValue === '') {
+            selectRegions
+                .clearStore()
+                .clearChoices()
+                .setChoices([{ value: '', label: '--Выберите регион--' }], 'value', 'label')
+                .setChoiceByValue('')
+        }
+        else
+        {
+            selectRegions
+                .clearStore()
+                .clearChoices()
+                .setChoices(regions[selectedValue - 1], 'value', 'label')
+                .setChoiceByValue('') 
+        }
+           
+    });
+
+
+    new Choices("#selectType", selectOptions)
+            .setChoices(
+                cameraTypeAndModelData[0], 
+                'value', 'label')
+            .setChoiceByValue('')
+
+    new Choices("#selectModel", selectOptions)
+            .setChoices(
+                cameraTypeAndModelData[1], 
+                'value', 'label')
+            .setChoiceByValue('')
 
 });
-
-
+updateMapData(mapEdit, null)

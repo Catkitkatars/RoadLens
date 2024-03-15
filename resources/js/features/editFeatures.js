@@ -21,7 +21,7 @@ export let options = {
     }),
     outlineStyle: {
         color: '#03e9f4',
-        opacity: .3,
+        opacity: .5,
         weight: 2,
         dashArray: '1, 1',
         lineCap: 'round',
@@ -33,3 +33,14 @@ export let options = {
         fillColor: '#032b2d'
     }
 }
+
+
+export const selectOptions = {
+    allowHTML: true,
+    placeholder: true,
+    searchEnabled: true,
+    searchPlaceholderValue: 'Поиск',
+    removeItemButton: false,
+    shouldSort: false, 
+    itemSelectText: 'Выбрать',
+};

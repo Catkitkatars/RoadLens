@@ -1,4 +1,6 @@
-
+import L from 'leaflet'; 
+import 'leaflet-geotag-photo';
+import {options, cameraTypeAndModelData} from '../features/homeFeatures';
 
 
 export function addInfoBlock(object) {
@@ -76,12 +78,141 @@ export function updateIcon(cameraType) {
 }
 
 export function transformValuesInObj(object, cameraTypeAndModelData) {
-    object.properties.type = cameraTypeAndModelData[0][parseInt(object.properties.type) - 1]
-    object.properties.model = cameraTypeAndModelData[1][parseInt(object.properties.model) - 1]
+    object.properties.type = cameraTypeAndModelData[0][parseInt(object.properties.type)].label
+    object.properties.model = cameraTypeAndModelData[1][parseInt(object.properties.model)].label
     object.properties.angle = parseInt(object.properties.angle);
     object.geometry.geometries[0].coordinates = [parseFloat(object.geometry.geometries[0].coordinates[0]),parseFloat(object.geometry.geometries[0].coordinates[1])];
     object.geometry.geometries[1].coordinates = [parseFloat(object.geometry.geometries[1].coordinates[0]),parseFloat(object.geometry.geometries[1].coordinates[1])];
 
 
     return object;
+}
+
+export function initializeMap(latitude, longitude, zoomLevel) {
+    let map = L.map('map', {
+        center: [latitude, longitude],
+        zoom: zoomLevel
+    });
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="#">RoadLens</a>'
+    }).addTo(map);
+
+    return map;
+}
+
+export function updateURL(map) {
+    map.on('moveend', function(event){
+        let newUrl = `http://localhost:8080/map/` + getCenterAndZoom(map);
+        window.history.replaceState({}, '', newUrl);
+    });
+}
+
+window.uuids = [];
+
+function checkUuid(array, uuid) {
+    return array.includes(uuid); 
+}
+
+export function fetchDataAndDisplayMarkers(map, infoCameraBlock) {
+    let bounds = map.getBounds();
+    let requestData = {
+        northEastLat: bounds._northEast.lat,
+        northEastLng: bounds._northEast.lng,
+        southWestLat: bounds._southWest.lat,
+        southWestLng: bounds._southWest.lng
+    };
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    fetch(`/getCameras`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Беда');
+        }
+        return response.json();
+    })
+    .then(cameras => {
+
+        let activePoligon = null;
+        for (let cameraObj in cameras) {
+            if(checkUuid(window.uuids, cameras[cameraObj].properties.uuid)){
+                continue;
+            }
+            window.uuids.push(cameras[cameraObj].properties.uuid)
+
+            options.cameraIcon = updateIcon(cameras[cameraObj].properties.type);
+            let handleCameraObj = transformValuesInObj(cameras[cameraObj], cameraTypeAndModelData); 
+
+            let marker = L.geotagPhoto.camera(handleCameraObj, options)
+            
+                if(infoCameraBlock === null) {
+                    marker.addTo(map)
+                }
+                else 
+                {
+                    marker.on('click', function (event) {
+                        if (activePoligon === this) {
+                            this.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
+                            activePoligon = null;
+                            infoCameraBlock.classList.remove('section_camera_info_move');
+                            infoCameraBlock.innerHTML = '';
+                        } else {
+                            if (activePoligon) {
+                                activePoligon.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
+                                infoCameraBlock.classList.remove('section_camera_info_move');
+                                infoCameraBlock.innerHTML = '';
+                            }
+                            this.setStyle({ fillColor: '#056c71', fillOpacity: 0.7 });
+                            activePoligon = this;
+                            infoCameraBlock.classList.add('section_camera_info_move');
+                            infoCameraBlock.innerHTML = addInfoBlock(handleCameraObj);
+                            
+                            let btnClose = document.querySelector('.icon-closed');
+        
+                            btnClose.addEventListener('click', () => {
+                                infoCameraBlock.classList.remove('section_camera_info_move');
+                                infoCameraBlock.innerHTML = '';
+                                activePoligon.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
+                                activePoligon = null;
+                            })
+                        }
+                    })
+                    .on('mouseover', function (e) {
+                        if(activePoligon != this) {
+                            this.setStyle({ fillOpacity: 0.6 });
+                        }
+                    })
+                    .on('mouseout', function (e) {
+                        if(activePoligon != this) {
+                            this.setStyle({ fillOpacity: 0.3 });
+                        }
+                    })
+        
+                   .addTo(map)
+                }
+            
+            
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+export function updateMapData(map, infoCameraBlock) {
+    map.on('moveend', function(event) {
+        fetchDataAndDisplayMarkers(map, infoCameraBlock);
+    });
+
+    map.on('zoomend', function(event) {
+        fetchDataAndDisplayMarkers(map, infoCameraBlock);
+    });
 }
