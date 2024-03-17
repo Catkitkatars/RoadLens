@@ -34,11 +34,11 @@ class Map extends Controller
 
     public function showPost(Request $request) {
 
-        
         $roadLens = new RoadLens();
 
-        $roadLens->addCamera($request);
-        return redirect('/');
+        $coords = $roadLens->addCamera($request);
+
+        return redirect("/map/" . $coords['camera_latitude'] . '/' . $coords['camera_longitude'] . '/16' );
     }
 
     public function showEditPage($uuid) {
@@ -67,6 +67,7 @@ class Map extends Controller
                     'car_speed' => $point['car_speed'],
                     'truck_speed' => $point['truck_speed'],
                     'user' => $point['user'],
+                    'isDeleted' => $point['isDeleted'],
                     'dateCreate' => date('d.m.Y', strtotime($point['created_at'])),
                     'lastUpdate' => date('d.m.Y', strtotime($point['updated_at'])),
                 ],

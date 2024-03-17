@@ -72,17 +72,25 @@ class RoadLens extends Model
 
         $validatedData['uuid'] = RoadLens::newUniqueId();
         $validatedData['user'] = 'admin';
+        $validatedData['isDeleted'] = '0';
+        
 
 
         if(isset($validatedData['flags'])) {
             $associativeArrayToString = implode(',', array_values($validatedData['flags']));
             $validatedData['flags'] = $associativeArrayToString;
-        
-            return RoadLens::create($validatedData);
+            RoadLens::create($validatedData);
+            return [
+                'camera_latitude' => $validatedData['camera_latitude'],
+                'camera_longitude' => $validatedData['camera_longitude']
+            ];
         }
 
-
-        return RoadLens::create($validatedData);
+        RoadLens::create($validatedData);
+        return [
+            'camera_latitude' => $validatedData['camera_latitude'],
+            'camera_longitude' => $validatedData['camera_longitude']
+        ];
     }
 
     public function getCameras($request) {

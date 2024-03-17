@@ -86,39 +86,77 @@ export let pointsCollection = {
     }
 }
 
-export let options = {
-    draggable: false,
-    control: false,
-    cameraIcon: L.icon({
-        iconUrl: '/dist/images/main-pin.png',
-        iconSize: [38, 38],
-        iconAnchor: [19, 35]
-    }),
-    targetIcon: L.icon({
-        iconUrl: '/dist/images/marker.svg',
-        iconSize: [0, 0],
-        iconAnchor: [16, 16]
-    }),
-    
-    angleIcon: L.icon({
-        iconUrl: '/dist/images/marker.svg',
-        iconSize: [0, 0],
-        iconAnchor: [16, 16]
-    }),
-    outlineStyle: {
-        color: '#03e9f4',
-        opacity: 0,
-        weight: 2,
-        dashArray: '1, 1',
-        lineCap: 'round',
-        lineJoin: 'round'
+export let options = 
+[
+    {
+        draggable: false,
+        control: false,
+        cameraIcon: L.icon({
+            iconUrl: '/dist/images/main-pin.png',
+            iconSize: [38, 38],
+            iconAnchor: [19, 35]
+        }),
+        targetIcon: L.icon({
+            iconUrl: '/dist/images/marker.svg',
+            iconSize: [0, 0],
+            iconAnchor: [16, 16]
+        }),
+        
+        angleIcon: L.icon({
+            iconUrl: '/dist/images/marker.svg',
+            iconSize: [0, 0],
+            iconAnchor: [16, 16]
+        }),
+        outlineStyle: {
+            color: '#03e9f4',
+            opacity: 0,
+            weight: 2,
+            dashArray: '1, 1',
+            lineCap: 'round',
+            lineJoin: 'round'
+        },
+        fillStyle: {
+            weight: 0,
+            fillOpacity: 0.3,
+            fillColor: '#032b2d'
+        }
     },
-    fillStyle: {
-        weight: 0,
-        fillOpacity: 0.3,
-        fillColor: '#032b2d'
-    }
-}
+    {
+        draggable: false,
+        control: false,
+        cameraIcon: L.icon({
+            iconUrl: '/dist/images/deleted.png',
+            iconSize: [38, 38],
+            iconAnchor: [19, 35]
+        }),
+        targetIcon: L.icon({
+            iconUrl: '/dist/images/marker.svg',
+            iconSize: [0, 0],
+            iconAnchor: [16, 16]
+        }),
+        
+        angleIcon: L.icon({
+            iconUrl: '/dist/images/marker.svg',
+            iconSize: [0, 0],
+            iconAnchor: [16, 16]
+        }),
+        outlineStyle: {
+            color: '#03e9f4',
+            opacity: 0,
+            weight: 2,
+            dashArray: '1, 1',
+            lineCap: 'round',
+            lineJoin: 'round'
+        },
+        fillStyle: {
+            weight: 0,
+            fillOpacity: 0,
+            fillColor: '#032b2d'
+        }
+    },
+]
+
+
 
 
 export let cameraTypeAndModelData = [

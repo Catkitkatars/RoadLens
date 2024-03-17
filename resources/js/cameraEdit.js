@@ -20,7 +20,22 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="#">RoadLens</a>'
 }).addTo(mapEdit);
 
-fetchDataAndDisplayMarkers(mapEdit, null);
+let layerGroups = {
+    camerasLayer: L.layerGroup(),
+    deletedsLayer: L.layerGroup(),
+}
+
+let layersControl = L.control.layers(null, {
+    "Контроль ПДД": layerGroups.camerasLayer,
+    "Удалены": layerGroups.deletedsLayer
+})
+
+layersControl.addTo(mapEdit);
+fetchDataAndDisplayMarkers(mapEdit, layerGroups);
+mapEdit.addLayer(layerGroups.camerasLayer);
+mapEdit.addLayer(layerGroups.deletedsLayer);
+
+updateMapData(mapEdit, layerGroups);
 
 let points = {
     type: 'Feature',

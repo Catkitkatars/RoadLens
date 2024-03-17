@@ -108,14 +108,59 @@ export function updateURL(map) {
     });
 }
 
+
+
+
+function addListeners(marker) {
+    let infoCameraBlock = document.querySelector('.section_camera_info');
+    marker.on('click', function(event) {
+        if (window.activePoligon === this) {
+            this.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
+            window.activePoligon = null;
+            infoCameraBlock.classList.remove('section_camera_info_move');
+            infoCameraBlock.innerHTML = '';
+        } else {
+            if (window.activePoligon) {
+                window.activePoligon.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
+                infoCameraBlock.classList.remove('section_camera_info_move');
+                infoCameraBlock.innerHTML = '';
+            }
+            this.setStyle({ fillColor: '#056c71', fillOpacity: 0.7 });
+            window.activePoligon = this;
+            infoCameraBlock.classList.add('section_camera_info_move');
+            infoCameraBlock.innerHTML = addInfoBlock(marker);
+
+            let btnClose = document.querySelector('.icon-closed');
+            btnClose.addEventListener('click', function() {
+                infoCameraBlock.classList.remove('section_camera_info_move');
+                infoCameraBlock.innerHTML = '';
+                window.activePoligon.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
+                window.activePoligon = null;
+            });
+        }
+    })
+    .on('mouseover', function (e) {
+        if(activePoligon != this) {
+            this.setStyle({ fillOpacity: 0.6 });
+        }
+    })
+    .on('mouseout', function (e) {
+        if(activePoligon != this) {
+            this.setStyle({ fillOpacity: 0.3 });
+        }
+    })
+}
+
 window.uuids = [];
+window.activePoligon = null;
 
 function checkUuid(array, uuid) {
     return array.includes(uuid); 
 }
 
-export function fetchDataAndDisplayMarkers(map, infoCameraBlock) {
+export function fetchDataAndDisplayMarkers(map, layerGroups) {
     let bounds = map.getBounds();
+
     let requestData = {
         northEastLat: bounds._northEast.lat,
         northEastLng: bounds._northEast.lng,
@@ -135,71 +180,36 @@ export function fetchDataAndDisplayMarkers(map, infoCameraBlock) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Беда');
+            throw new Error('Response error');
         }
         return response.json();
     })
     .then(cameras => {
-
-        let activePoligon = null;
+        let marker = null;
         for (let cameraObj in cameras) {
             if(checkUuid(window.uuids, cameras[cameraObj].properties.uuid)){
                 continue;
             }
             window.uuids.push(cameras[cameraObj].properties.uuid)
 
-            options.cameraIcon = updateIcon(cameras[cameraObj].properties.type);
-            let handleCameraObj = transformValuesInObj(cameras[cameraObj], cameraTypeAndModelData); 
+            if(cameras[cameraObj].properties.isDeleted == '0')
+            {
+                options[0].cameraIcon = updateIcon(cameras[cameraObj].properties.type);
+                let handleCameraObj = transformValuesInObj(cameras[cameraObj], cameraTypeAndModelData);
+                marker = L.geotagPhoto.camera(handleCameraObj, options[0])
+                marker.properties = handleCameraObj.properties;
+                layerGroups.camerasLayer.addLayer(marker);
 
-            let marker = L.geotagPhoto.camera(handleCameraObj, options)
-            
-                if(infoCameraBlock === null) {
-                    marker.addTo(map)
-                }
-                else 
-                {
-                    marker.on('click', function (event) {
-                        if (activePoligon === this) {
-                            this.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
-                            activePoligon = null;
-                            infoCameraBlock.classList.remove('section_camera_info_move');
-                            infoCameraBlock.innerHTML = '';
-                        } else {
-                            if (activePoligon) {
-                                activePoligon.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
-                                infoCameraBlock.classList.remove('section_camera_info_move');
-                                infoCameraBlock.innerHTML = '';
-                            }
-                            this.setStyle({ fillColor: '#056c71', fillOpacity: 0.7 });
-                            activePoligon = this;
-                            infoCameraBlock.classList.add('section_camera_info_move');
-                            infoCameraBlock.innerHTML = addInfoBlock(handleCameraObj);
-                            
-                            let btnClose = document.querySelector('.icon-closed');
-        
-                            btnClose.addEventListener('click', () => {
-                                infoCameraBlock.classList.remove('section_camera_info_move');
-                                infoCameraBlock.innerHTML = '';
-                                activePoligon.setStyle({ fillColor: '#032b2d', fillOpacity: 0.3 });
-                                activePoligon = null;
-                            })
-                        }
-                    })
-                    .on('mouseover', function (e) {
-                        if(activePoligon != this) {
-                            this.setStyle({ fillOpacity: 0.6 });
-                        }
-                    })
-                    .on('mouseout', function (e) {
-                        if(activePoligon != this) {
-                            this.setStyle({ fillOpacity: 0.3 });
-                        }
-                    })
-        
-                   .addTo(map)
-                }
-            
-            
+            }
+            else if(cameras[cameraObj].properties.isDeleted == '1')
+            {
+                let handleCameraObj = transformValuesInObj(cameras[cameraObj], cameraTypeAndModelData);
+                marker = L.geotagPhoto.camera(handleCameraObj, options[1])
+                marker.properties = handleCameraObj.properties;
+                layerGroups.deletedsLayer.addLayer(marker);
+
+            }
+            addListeners(marker);
         }
     })
     .catch(error => {
@@ -207,12 +217,13 @@ export function fetchDataAndDisplayMarkers(map, infoCameraBlock) {
     });
 }
 
-export function updateMapData(map, infoCameraBlock) {
+
+export function updateMapData(map, layerGroups) {
     map.on('moveend', function(event) {
-        fetchDataAndDisplayMarkers(map, infoCameraBlock);
+        fetchDataAndDisplayMarkers(map, layerGroups);
     });
 
     map.on('zoomend', function(event) {
-        fetchDataAndDisplayMarkers(map, infoCameraBlock);
+        fetchDataAndDisplayMarkers(map, layerGroups);
     });
 }
