@@ -3,7 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build --watch"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
@@ -16,7 +16,7 @@
         "vue": "^3.2.37",
         "webpack": "^5.90.3",
         "webpack-cli": "^5.1.4"
-    },
+    }, 
     "dependencies": {
         "choices.js": "^10.2.0",
         "fs-extra": "^11.2.0",

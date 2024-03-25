@@ -8,7 +8,22 @@ import Choices from 'choices.js';
 
 
 let cameraPoint = [parseFloat(longitude.value), parseFloat(latitude.value)]
-let targetCoords = calculateNewLatLng(L.latLng(latitude.value, longitude.value), 300, 90);
+let targetCoords = null;
+
+if(target_latitude.value == '' && 
+    target_longitude.value == '') {
+        
+    targetCoords = calculateNewLatLng(L.latLng(latitude.value, longitude.value), 300, 90);
+}
+else
+{
+    targetCoords = {
+        lat: parseFloat(target_latitude.value),
+        lng: parseFloat(target_longitude.value)
+    };
+}
+
+
 let targetPoint = [targetCoords.lng, targetCoords.lat]
 
 let mapEdit = L.map('map', {
@@ -31,13 +46,13 @@ let layersControl = L.control.layers(null, {
 })
 
 layersControl.addTo(mapEdit);
-fetchDataAndDisplayMarkers(mapEdit, layerGroups);
+
 mapEdit.addLayer(layerGroups.camerasLayer);
 mapEdit.addLayer(layerGroups.deletedsLayer);
 
 updateMapData(mapEdit, layerGroups);
 
-let points = {
+let point = {
     type: 'Feature',
     properties: {
         angle: 20
@@ -57,7 +72,12 @@ let points = {
     }
 }
 
-let marker = L.geotagPhoto.camera(points, options).addTo(mapEdit);
+if(angle.value != '') {
+    point.properties.angle = parseInt(angle.value)
+    window.uuids.push(uuid.innerHTML);
+}
+
+let marker = L.geotagPhoto.camera(point, options).addTo(mapEdit);
 
 let fieldOfView = marker.getFieldOfView();
 let cameraLatLng = marker.getCameraLatLng();
@@ -189,17 +209,37 @@ marker.on('change', function (event) {
     }
 });
 
+
+
+
+
+let selectedCountry = selectCountries.options[selectCountries.selectedIndex] ? selectCountries.options[selectCountries.selectedIndex].value : '';
+let selectedRegion = selectRegions.options[selectRegions.selectedIndex] ? selectRegions.options[selectRegions.selectedIndex].value : '';
+let selectedType = selectType.options[selectType.selectedIndex] ? selectType.options[selectType.selectedIndex].value : '';
+let selectedModel = selectModel.options[selectModel.selectedIndex] ? selectModel.options[selectModel.selectedIndex].value : '';
+
+
 document.addEventListener('DOMContentLoaded', function() {
 
     //Add Choices on four <selectors>
-
+    
+    // new Choices("#selectCountries", { removeItems: true });
     new Choices("#selectCountries", selectOptions)
-            .setChoices(countries, 'value', 'label')
-            .setChoiceByValue('')
+            .setChoices(countries, 'value', 'label', true)
+            .setChoiceByValue(selectedCountry)
 
     let selectRegions = new Choices("#selectRegions", selectOptions)
-                                .setChoices([{ value: '', label: '--Выберите регион--' }], 'value', 'label')
-                                .setChoiceByValue('')
+                                .setChoices([{ value: '', label: '--Выберите регион--' }], 'value', 'label', true)
+                                .setChoiceByValue(selectedCountry)
+    console.log(selectCountries.value)
+
+    if(selectCountries.value) {
+        selectRegions
+            .clearStore()
+            .clearChoices()
+            .setChoices(regions[selectCountries.value - 1], 'value', 'label')
+            .setChoiceByValue(selectedRegion) 
+    } 
 
     selectCountries.addEventListener('change',function(event) {
         let selectedValue = event.target.value;
@@ -226,14 +266,18 @@ document.addEventListener('DOMContentLoaded', function() {
     new Choices("#selectType", selectOptions)
             .setChoices(
                 cameraTypeAndModelData[0], 
-                'value', 'label')
-            .setChoiceByValue('')
+                'value', 'label', true)
+            .setChoiceByValue(selectedType)
 
     new Choices("#selectModel", selectOptions)
             .setChoices(
                 cameraTypeAndModelData[1], 
-                'value', 'label')
-            .setChoiceByValue('')
+                'value', 'label', true)
+            .setChoiceByValue(selectedModel)
 
 });
+
+
+
+fetchDataAndDisplayMarkers(mapEdit, layerGroups);
 updateMapData(mapEdit, null)

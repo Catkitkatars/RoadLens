@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('car_speed');
             $table->string('truck_speed');
             $table->string('isDeleted')->default('0');
+            $table->string('isASC');
             $table->string('user')->default('admin');
             $table->string('source');
             $table->set('flags', [
@@ -40,6 +41,7 @@ return new class extends Migration
                 '7', 
                 '8', 
                 '9',
+                '10'
             ]);
             $table->timestamps();
         });

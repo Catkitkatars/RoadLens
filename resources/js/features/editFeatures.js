@@ -43,4 +43,5 @@ export const selectOptions = {
     removeItemButton: false,
     shouldSort: false, 
     itemSelectText: 'Выбрать',
+    removeItems: true
 };

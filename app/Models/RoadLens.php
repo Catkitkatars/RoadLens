@@ -32,6 +32,7 @@ class RoadLens extends Model
         'car_speed',
         'truck_speed',
         'source',
+        'isASC',
         'flags',
     ];
 
@@ -58,6 +59,7 @@ class RoadLens extends Model
             'car_speed' => 'required|numeric|between:0,250',
             'truck_speed' => 'required|numeric|between:0,250',
             'source' => 'required|string',
+            'isASC' => 'string|numeric|in:0,1',
             'flags' => 'nullable|array',
             'flags.*' => 'nullable|numeric|in:1,2,3,4,5,6,7,8,9',
         ]);
@@ -73,6 +75,7 @@ class RoadLens extends Model
         $validatedData['uuid'] = RoadLens::newUniqueId();
         $validatedData['user'] = 'admin';
         $validatedData['isDeleted'] = '0';
+        $validatedData['isASC'] = '0';
         
 
 

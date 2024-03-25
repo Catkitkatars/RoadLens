@@ -52,7 +52,7 @@ export function addInfoBlock(object) {
                 <h5>${object.properties.lastUpdate}</h5>
             </div>
             <div class="edit-submit">
-                <a href="localhost:8080/edit/${object.properties.id}">
+                <a href="/edit/${object.properties.uuid}">
                     Изменить
                 </a>
             </div>
@@ -151,7 +151,6 @@ function addListeners(marker) {
     })
 }
 
-window.uuids = [];
 window.activePoligon = null;
 
 function checkUuid(array, uuid) {
