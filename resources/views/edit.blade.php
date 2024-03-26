@@ -57,12 +57,17 @@
     <main>
         <div class="container-map-edit">
             <section>
-                <form class="edit-form" method="POST" action="/edit/submit">
+                <form class="edit-form" method="POST" action="/edit/add">
                 @csrf
                 <div class="name-block">
                     <div class="name-block_container">
                         @if(isset($uuid)) 
-                            <h3 class="name-block_h3">Редактирировать</h3>
+                            <h3 class="name-block_h3">Редактировать</h3>
+                            @if($isDeleted == 0) 
+                                <p style="text-align:center; color: green">Действующая</p>
+                            @else
+                                <p style="text-align:center; color: red">Удалена</p>
+                            @endif
                         @else 
                             <h3 class="name-block_h3">Добавить</h3>
                         @endif
@@ -71,7 +76,7 @@
                 <div class="flex-form">
                     @if(isset($uuid)) 
                         <div class="edit-text-block mb-3">
-                            <p>uuid: <span id='uuid'>{{ $uuid }}</span></p>
+                            <p style="text-align: center; text-transform:uppercase;">uuid: <input style="text-align: center; border: none; background-color: transparent; outline: none; width: 100%" value="{{ $uuid }}" name="uuid" id='uuid'></p>
                         </div>
                     @endif
                     <div class="select">
@@ -125,7 +130,14 @@
                         <input id="target_longitude"class="input-fixed" type="text" name="target_longitude" value="{{ $target_longitude ?? '' }}" required="">
                         <label>Долгота таргет</label>
                     </div>
-
+                    <div class="input-box" style="display: none">
+                        <input id="isASC" class="input-fixed" type="text" name="isASC" value="{{ $isASC ?? '' }}" required="">
+                        <label>КСС</label>
+                    </div>
+                    <div class="input-box" style="display: none">
+                        <input id="isDeleted" class="input-fixed" type="text" name="isDeleted" value="{{ $isDeleted ?? '' }}" required="">
+                        <label>Удалена</label>
+                    </div>
                     <div class="input-box">
                         <input id="direction" class="input-fixed" type="text" name="direction" value="{{ $direction ?? '' }}" required="">
                         <label>Направление</label>
@@ -170,25 +182,34 @@
                     <div class="chekbox-block">
                         <div class="container">
                             <ul class="ks-cboxtags">
-                            @foreach($flagDescriptions as $key => $description)
-                                <li>
-                                    <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}" 
-                                        {{ in_array($key, $flags) ? 'checked' : '' }}>
-                                    <label for="checkbox{{ $key }}">{{ $description }}</label>
-                                </li>
-                            @endforeach
+                            @if(isset($flagDescriptions) && isset($flags))
+                                @foreach($flagDescriptions as $key => $description)
+                                    <li>
+                                        <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}" 
+                                            {{ in_array($key, $flags) ? 'checked' : '' }}>
+                                        <label for="checkbox{{ $key }}">{{ $description }}</label>
+                                    </li>
+                                @endforeach
+                            @endif
                             </ul>
                         </div>
                     </div>
                         <div class="edit-submit">
 
-                        @if(isset($uuid)) 
-                            <button type="delete">
-                                Удалить
-                            </button>
-                            <button type="update">
-                                Обновить
-                            </button>
+                        @if(isset($uuid))
+                            @if($isDeleted == 0) 
+                                <button id="deleteBtn" type="submit" formaction="/edit/delete/{{ $uuid }}">
+                                    Удалить
+                                </button>
+                                
+                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $uuid }}">
+                                    Обновить
+                                </button>
+                            @else
+                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $uuid }}">
+                                    Обновить
+                                </button>
+                            @endif
                         @else 
                             <button type="submit">
                                 Добавить

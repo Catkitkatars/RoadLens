@@ -10,8 +10,7 @@ import Choices from 'choices.js';
 let cameraPoint = [parseFloat(longitude.value), parseFloat(latitude.value)]
 let targetCoords = null;
 
-if(target_latitude.value == '' && 
-    target_longitude.value == '') {
+if(target_latitude.value == '' && target_longitude.value == '') {
         
     targetCoords = calculateNewLatLng(L.latLng(latitude.value, longitude.value), 300, 90);
 }
@@ -72,9 +71,9 @@ let point = {
     }
 }
 
-if(angle.value != '') {
+if(angle.value) {
     point.properties.angle = parseInt(angle.value)
-    window.uuids.push(uuid.innerHTML);
+    window.uuids.push(uuid.value);  
 }
 
 let marker = L.geotagPhoto.camera(point, options).addTo(mapEdit);
@@ -223,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Add Choices on four <selectors>
     
-    // new Choices("#selectCountries", { removeItems: true });
     new Choices("#selectCountries", selectOptions)
             .setChoices(countries, 'value', 'label', true)
             .setChoiceByValue(selectedCountry)
@@ -231,7 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectRegions = new Choices("#selectRegions", selectOptions)
                                 .setChoices([{ value: '', label: '--Выберите регион--' }], 'value', 'label', true)
                                 .setChoiceByValue(selectedCountry)
-    console.log(selectCountries.value)
 
     if(selectCountries.value) {
         selectRegions
@@ -276,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .setChoiceByValue(selectedModel)
 
 });
-
 
 
 fetchDataAndDisplayMarkers(mapEdit, layerGroups);

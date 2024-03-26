@@ -38,29 +38,36 @@ class Map extends Controller
     }
 
     public function showAddPage($latitude, $longitude, $zoom) {
-        return view('add', [
+        return view('edit', [
             'latitude' => $latitude,
             'longitude' => $longitude,
             'zoom' => $zoom
         ]);
     }
 
-    public function showPost(Request $request) {
+    public function add(Request $request) {
+        $result = (new RoadLens())->addCamera($request);
 
-
-        // dd($request->all());
-        $roadLens = new RoadLens();
-
-        $coords = $roadLens->addCamera($request);
-
-        return redirect("/map/" . $coords['camera_latitude'] . '/' . $coords['camera_longitude'] . '/16' );
+        return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
+
+    public function update($uuid, Request $request){
+        $result = (new RoadLens)->updateCamera($uuid, $request);
+
+        return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
+    }
+
+    public function delete($uuid, Request $request){
+        $result = (new RoadLens())->deleteCamera($uuid);
+
+        return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
+    }
+
 
     public function showEditPage($uuid) {
 
         $camera = (new RoadLens)->where('uuid', $uuid)->first();
-        // dd($camera);
-        return view('add', [
+        return view('edit', [
             'uuid' => $camera->uuid,
             'country' => $camera->country,
             'region' => $camera->region,
@@ -76,17 +83,14 @@ class Map extends Controller
             'car_speed' => $camera->car_speed,
             'truck_speed' => $camera->truck_speed,
             'user' => $camera->user,
+            'isASC' => $camera->isASC,
+            'isDeleted' => $camera->isDeleted,
             'source' => $camera->source,
             'flags' => explode(",", $camera->flags),
             'flagDescriptions' => $this->flagsDescriprion,
 
 
         ]);
-
-        // Получаем uuid 
-        // Ищем в базе элемент с таким uuid 
-        // Получаем
-        // Вызваем view куда передаем данные о элементе и добавляем их в поля ввода
     }
 
     public function getCamerasInBounds(Request $request){
