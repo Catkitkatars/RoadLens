@@ -41,7 +41,8 @@ class Map extends Controller
         return view('edit', [
             'latitude' => $latitude,
             'longitude' => $longitude,
-            'zoom' => $zoom
+            'zoom' => $zoom,
+            'flagDescriptions' => $this->flagsDescriprion,
         ]);
     }
 

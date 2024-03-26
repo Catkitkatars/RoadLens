@@ -131,11 +131,11 @@
                         <label>Долгота таргет</label>
                     </div>
                     <div class="input-box" style="display: none">
-                        <input id="isASC" class="input-fixed" type="text" name="isASC" value="{{ $isASC ?? '' }}" required="">
+                        <input id="isASC" class="input-fixed" type="text" name="isASC" value="{{ $isASC ?? '0' }}" required="">
                         <label>КСС</label>
                     </div>
                     <div class="input-box" style="display: none">
-                        <input id="isDeleted" class="input-fixed" type="text" name="isDeleted" value="{{ $isDeleted ?? '' }}" required="">
+                        <input id="isDeleted" class="input-fixed" type="text" name="isDeleted" value="{{ $isDeleted ?? '0' }}" required="">
                         <label>Удалена</label>
                     </div>
                     <div class="input-box">
@@ -182,7 +182,7 @@
                     <div class="chekbox-block">
                         <div class="container">
                             <ul class="ks-cboxtags">
-                            @if(isset($flagDescriptions) && isset($flags))
+                            @if(isset($flags))
                                 @foreach($flagDescriptions as $key => $description)
                                     <li>
                                         <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}" 
@@ -190,6 +190,14 @@
                                         <label for="checkbox{{ $key }}">{{ $description }}</label>
                                     </li>
                                 @endforeach
+                            @elseif(isset($flagDescriptions))
+                                @foreach($flagDescriptions as $key => $description)
+                                    <li>
+                                        <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}">
+                                        <label for="checkbox{{ $key }}">{{ $description }}</label>
+                                    </li>
+                                @endforeach
+                                    
                             @endif
                             </ul>
                         </div>

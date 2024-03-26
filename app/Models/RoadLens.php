@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
+use App\Models\AverageSpeedControl;
 
 class RoadLens extends Model
 {
@@ -94,6 +95,7 @@ class RoadLens extends Model
     }
     public function updateCamera($uuid, $request) 
     {
+
         $validator = Validator::make($request->all(), [
             'country' => 'required|numeric|between:1,15',
             'region' => 'required|numeric|between:1,85',
@@ -113,18 +115,24 @@ class RoadLens extends Model
             'ASC' => 'nullable|array',
             'ASC.uuid' => 'uuid',
             'ASC.speed' => 'numeric|min:10',
-            'isASC' => 'string|numeric|in:0,1',
+            'isASC' => 'numeric',
             'flags' => 'nullable|array',
-            'flags.*' => 'nullable|numeric|in:1,2,3,4,5,6,7,8,9',
+            'flags.*' => 'nullable|numeric|in:1,2,3,4,5,6,7,8,9,10',
         ]);
 
         if ($validator->fails()) {
-            return redirect('register')
-                        ->withErrors($validator)
-                        ->withInput();
+            $errors = $validator->errors();
+            dd($errors->first());
         }
-
         $validatedData = $validator->validated();
+
+        
+
+        $idSection = AverageSpeedControl::addSection($uuid, $validatedData['ASC']);
+
+        $validatedData['isASC'] = $idSection;
+        
+        dd($validatedData);
 
         if(isset($validatedData['flags'])) {
             $arrayToString = implode(',', array_values($validatedData['flags']));
