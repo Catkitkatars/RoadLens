@@ -126,20 +126,18 @@ class RoadLens extends Model
         }
         $validatedData = $validator->validated();
 
-        
-
-        $idSection = AverageSpeedControl::addSection($uuid, $validatedData['ASC']);
-
-        $validatedData['isASC'] = $idSection;
-        
-        dd($validatedData);
-
         if(isset($validatedData['flags'])) {
             $arrayToString = implode(',', array_values($validatedData['flags']));
             $validatedData['flags'] = $arrayToString;
         }
+        
         if(isset($validatedData['ASC'])) {
-            dd($validatedData['ASC']);
+            $nextCameraAndIdSection = AverageSpeedControl::addSection($uuid, $validatedData['ASC']);
+
+            $validatedData['isASC'] = $nextCameraAndIdSection[1]; // id section
+            RoadLens::where('uuid', $nextCameraAndIdSection[0])->update([
+                'isASC' => $nextCameraAndIdSection[1],
+            ]);
         }
 
         RoadLens::where('uuid', $uuid)->update([
@@ -194,6 +192,7 @@ class RoadLens extends Model
                             ->whereBetween('camera_longitude', [$southWestLng, $northEastLng])
                             ->get();
 
+        
         return $cameras;
     }
 }

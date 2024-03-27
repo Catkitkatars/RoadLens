@@ -32,3 +32,5 @@ Route::post('/edit/delete/{uuid}', [Map::class, 'delete']);
 
 
 Route::get('/edit/{uuid}', [Map::class, 'showEditPage']);
+
+// Route::get('/getCameras', [Map::class, 'getCamerasInBounds']);

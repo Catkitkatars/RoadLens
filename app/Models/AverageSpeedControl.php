@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use App\Models\RoadLens;
 
 class AverageSpeedControl extends Model
 {
@@ -40,7 +41,7 @@ class AverageSpeedControl extends Model
             $result = AverageSpeedControl::create([
                 'data' => $jsonData
             ]);
-            return $result->id;
+            return [$validatedData['uuid'], $result->id];
         }
         else 
         {

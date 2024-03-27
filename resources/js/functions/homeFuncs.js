@@ -3,7 +3,7 @@ import 'leaflet-geotag-photo';
 import {options, cameraTypeAndModelData} from '../features/homeFeatures';
 
 
-export function addInfoBlock(object) {
+export function addInfoBlock(object, cameraTypeAndModelData) {
     return `
     <div class="side_camera_block">
         <span class="icon-closed material-symbols-outlined">
@@ -19,12 +19,12 @@ export function addInfoBlock(object) {
             <div class="info-box_specification">
                 <p>Тип:</p>
                 <div class="line-style"></div>
-                <h5>${object.properties.type}</h5>
+                <h5>${cameraTypeAndModelData[0][object.properties.type].label}</h5>
             </div>
             <div class="info-box_specification">
                 <p>Модель:</p>
                 <div class="line-style"></div>
-                <h5>${object.properties.model}</h5>
+                <h5>${cameraTypeAndModelData[1][object.properties.type].label}</h5>
             </div>
             <div class="info-box_specification">
                 <p>Скорость легковые:</p>
@@ -77,17 +77,6 @@ export function updateIcon(cameraType) {
     });
 }
 
-export function transformValuesInObj(object, cameraTypeAndModelData) {
-    object.properties.type = cameraTypeAndModelData[0][parseInt(object.properties.type)].label
-    object.properties.model = cameraTypeAndModelData[1][parseInt(object.properties.model)].label
-    object.properties.angle = parseInt(object.properties.angle);
-    object.geometry.geometries[0].coordinates = [parseFloat(object.geometry.geometries[0].coordinates[0]),parseFloat(object.geometry.geometries[0].coordinates[1])];
-    object.geometry.geometries[1].coordinates = [parseFloat(object.geometry.geometries[1].coordinates[0]),parseFloat(object.geometry.geometries[1].coordinates[1])];
-
-
-    return object;
-}
-
 export function initializeMap(latitude, longitude, zoomLevel) {
     let map = L.map('map', {
         center: [latitude, longitude],
@@ -128,7 +117,7 @@ function addListeners(marker) {
             this.setStyle({ fillColor: '#056c71', fillOpacity: 0.7 });
             window.activePoligon = this;
             infoCameraBlock.classList.add('section_camera_info_move');
-            infoCameraBlock.innerHTML = addInfoBlock(marker);
+            infoCameraBlock.innerHTML = addInfoBlock(marker, cameraTypeAndModelData);
 
             let btnClose = document.querySelector('.icon-closed');
             btnClose.addEventListener('click', function() {
@@ -194,17 +183,15 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
             if(cameras[cameraObj].properties.isDeleted == '0')
             {
                 options[0].cameraIcon = updateIcon(cameras[cameraObj].properties.type);
-                let handleCameraObj = transformValuesInObj(cameras[cameraObj], cameraTypeAndModelData);
-                marker = L.geotagPhoto.camera(handleCameraObj, options[0])
-                marker.properties = handleCameraObj.properties;
+                marker = L.geotagPhoto.camera(cameras[cameraObj], options[0])
+                marker.properties = cameras[cameraObj].properties;
                 layerGroups.camerasLayer.addLayer(marker);
 
             }
             else if(cameras[cameraObj].properties.isDeleted == '1')
             {
-                let handleCameraObj = transformValuesInObj(cameras[cameraObj], cameraTypeAndModelData);
-                marker = L.geotagPhoto.camera(handleCameraObj, options[1])
-                marker.properties = handleCameraObj.properties;
+                marker = L.geotagPhoto.camera(cameras[cameraObj], options[1])
+                marker.properties = cameras[cameraObj].properties;
                 layerGroups.deletedsLayer.addLayer(marker);
 
             }
