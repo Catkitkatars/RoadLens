@@ -1,58 +1,121 @@
 import L from 'leaflet'; 
 import 'leaflet-geotag-photo';
+import 'leaflet-polylinedecorator';
 import {options, cameraTypeAndModelData} from '../features/homeFeatures';
 
 
+export function createPolyline(coords) {
+    let polyline = L.polyline(coords, {
+        color: 'red',
+        opacity: .5,
+        weight: 3
+    })
+
+    
+    let decorator = L.polylineDecorator(polyline, {
+        patterns: [
+            {offset: 50, repeat: 50, symbol: L.Symbol.arrowHead({pixelSize: 8, polygon: false, pathOptions: {stroke: true, color: 'red', opacity: 0.5}})}
+        ]
+    })
+
+    return {
+        line: polyline,
+        arrow: decorator,
+    };
+}
 export function addInfoBlock(object, cameraTypeAndModelData) {
+    let ASC = '';
+    if(object.properties.ASC){
+        let ASCNext = '';
+        let ASCPrevious = '';
+        let ASCSpeed =  '';
+        if(object.properties.ASC.next) {
+            ASCNext = `
+            <div class="info-box_specification" style="padding: 1em 0; display:flex; justify-content: space-between;">
+                <p>Следующая:</p>
+                <p style="color:#ffffffc5">${object.properties.ASC.next}</p>
+            </div>
+            `;
+            ASCSpeed = `
+            <div class="info-box_specification" style="padding: 1em 0; display:flex; justify-content: space-between;" >
+                <p>Средняя скорость:</p>
+                <p style="color:#ffffffc5">${object.properties.ASC.speed}</p>
+            </div>
+            `;
+        }
+        if(object.properties.ASC && object.properties.ASC.previous) {
+            ASCPrevious = `
+            <div class="info-box_specification" style="padding: 1em 0; display:flex; justify-content: space-between;">
+                <p>Предыдущая:</p>
+                <p style="color:#ffffffc5">${object.properties.ASC.previous}</p>
+            </div>
+            
+            `;
+        }
+
+        ASC = `
+        <div style="border: 2px solid #03e9f4; position: relative; padding: 0 5px; margin: 25px 0 10px;">
+        <div style="font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4";text-transform: uppercase; >Контроль средней скорости</div>
+            ${ASCPrevious}
+            ${ASCSpeed}
+            ${ASCNext}
+        </div>
+        
+        `;
+    }
+    
+
+
     return `
     <div class="side_camera_block">
         <span class="icon-closed material-symbols-outlined">
         close
         </span>
-        <div class="info-box">
-            <h3 class="name-block_h3">Инфо</h3>
-            <div class="info-box_specification">
-                <p>UUID:</p>
-                <div class="line-style"></div>
-                <h5>${object.properties.uuid}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Тип:</p>
-                <div class="line-style"></div>
-                <h5>${cameraTypeAndModelData[0][object.properties.type].label}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Модель:</p>
-                <div class="line-style"></div>
-                <h5>${cameraTypeAndModelData[1][object.properties.type].label}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Скорость легковые:</p>
-                <div class="line-style"></div>
-                <h5>${object.properties.car_speed}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Скорость грузовые:</p>
-                <div class="line-style"></div>
-                <h5>${object.properties.truck_speed}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Модератор:</p>
-                <div class="line-style"></div>
-                <h5>${object.properties.user}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Дата создания:</p>
-                <div class="line-style"></div>
-                <h5>${object.properties.dateCreate}</h5>
-            </div>
-            <div class="info-box_specification">
-                <p>Дата последних изменений:</p>
-                <div class="line-style"></div>
-                <h5>${object.properties.lastUpdate}</h5>
-            </div>
+            <div class="info-box">
+                <div style="border: 2px solid #03e9f4; position: relative; padding: 0 5px; margin: 25px 0 10px;">
+                <div style="font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4";text-transform: uppercase; >
+                    <span>ID:</span>
+                    ${object.properties.ulid}
+                </div>
+                    <div class="info-box_specification">
+                        <p>Тип:</p>
+                        <h5>${cameraTypeAndModelData[0][object.properties.type].label}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                    <div class="info-box_specification">
+                        <p>Модель:</p>
+                        <h5>${cameraTypeAndModelData[1][object.properties.model].label}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                    <div class="info-box_specification">
+                        <p>Скорость легковые:</p>
+                        <h5>${object.properties.car_speed}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                    <div class="info-box_specification">
+                        <p>Скорость грузовые:</p>
+                        <h5>${object.properties.truck_speed}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                    <div class="info-box_specification">
+                        <p>Модератор:</p>
+                        <h5>${object.properties.user}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                    <div class="info-box_specification">
+                        <p>Дата создания:</p>
+                        <h5>${object.properties.dateCreate}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                    <div class="info-box_specification">
+                        <p>Дата последних изменений:</p>
+                        <h5>${object.properties.lastUpdate}</h5>
+                    </div>
+                    <div class="line-style"></div>
+                </div>
+            ${ASC}
             <div class="edit-submit">
-                <a href="/edit/${object.properties.uuid}">
+                <a href="/edit/${object.properties.ulid}">
                     Изменить
                 </a>
             </div>
@@ -142,8 +205,8 @@ function addListeners(marker) {
 
 window.activePoligon = null;
 
-function checkUuid(array, uuid) {
-    return array.includes(uuid); 
+function checkUlid(array, ulid) {
+    return array.includes(ulid); 
 }
 
 export function fetchDataAndDisplayMarkers(map, layerGroups) {
@@ -175,12 +238,39 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
     .then(cameras => {
         let marker = null;
         for (let cameraObj in cameras) {
-            if(checkUuid(window.uuids, cameras[cameraObj].properties.uuid)){
+            if(Array.isArray(cameras[cameraObj])) {
+                for(let sectionCamera in cameras[cameraObj]) {
+                    let coordsForPolyline = [];
+                
+                    cameras[cameraObj][sectionCamera].forEach(element => {
+                        if(checkUlid(window.ulids, element.properties.ulid)){
+                            return;
+                        }
+                        window.ulids.push(element.properties.ulid)
+
+                        options[0].cameraIcon = updateIcon(element.properties.type);
+                        marker = L.geotagPhoto.camera(element, options[0]);
+
+                        coordsForPolyline.push([marker.getCameraLatLng().lat, marker.getCameraLatLng().lng]);
+                        marker.properties = element.properties;
+                        layerGroups.averageSpeedLayer.addLayer(marker);
+                        addListeners(marker);
+                    });
+
+                    let polyline = createPolyline(coordsForPolyline)
+
+                    layerGroups.averageSpeedLayer.addLayer(polyline.line);
+                    layerGroups.averageSpeedLayer.addLayer(polyline.arrow);
+                    
+                }
                 continue;
             }
-            window.uuids.push(cameras[cameraObj].properties.uuid)
+            if(checkUlid(window.ulids, cameras[cameraObj].properties.ulid)){
+                continue;
+            }
+            window.ulids.push(cameras[cameraObj].properties.ulid)
 
-            if(cameras[cameraObj].properties.isDeleted == '0')
+            if(cameras[cameraObj].properties.isDeleted == '0') 
             {
                 options[0].cameraIcon = updateIcon(cameras[cameraObj].properties.type);
                 marker = L.geotagPhoto.camera(cameras[cameraObj], options[0])

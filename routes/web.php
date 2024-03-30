@@ -26,11 +26,11 @@ Route::get('/edit/{latitude}/{longitude}/{zoom}', [Map::class, 'showAddPage']);
 
 Route::post('/edit/add', [Map::class, 'add']);
 
-Route::post('/edit/update/{uuid}', [Map::class, 'update']);
+Route::post('/edit/update/{ulid}', [Map::class, 'update']);
 
-Route::post('/edit/delete/{uuid}', [Map::class, 'delete']);
+Route::post('/edit/delete/{ulid}', [Map::class, 'delete']);
 
 
-Route::get('/edit/{uuid}', [Map::class, 'showEditPage']);
+Route::get('/edit/{ulid}', [Map::class, 'showEditPage']);
 
 // Route::get('/getCameras', [Map::class, 'getCamerasInBounds']);

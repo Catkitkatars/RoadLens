@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 use App\Models\AverageSpeedControl;
 
 class RoadLens extends Model
@@ -18,7 +17,7 @@ class RoadLens extends Model
 
     protected $table = 'russia';
     protected $fillable = [
-        'uuid',
+        'ulid',
         'country', 
         'region',
         'type',
@@ -37,10 +36,6 @@ class RoadLens extends Model
         'flags',
     ];
 
-    public function newUniqueId(): string
-    {
-        return (string) Uuid::uuid4();
-    }
     public function addCamera($request) 
     {
         $validator = Validator::make($request->all(), [
@@ -60,7 +55,7 @@ class RoadLens extends Model
             'source' => 'required|string',
             'isASC' => 'string|numeric|in:0,1',
             'flags' => 'nullable|array',
-            'flags.*' => 'nullable|numeric|in:1,2,3,4,5,6,7,8,9',
+            'flags.*' => 'nullable|numeric|in:1,2,3,4,5,6,7,8,9,10',
         ]);
 
         if ($validator->fails()) {
@@ -72,7 +67,7 @@ class RoadLens extends Model
         $validatedData = $validator->validated();
 
 
-        $validatedData['uuid'] = RoadLens::newUniqueId();
+        $validatedData['ulid'] = Str::ulid();
         $validatedData['user'] = 'admin';
         $validatedData['isDeleted'] = '0';
         $validatedData['isASC'] = '0';
@@ -93,9 +88,8 @@ class RoadLens extends Model
             'lng' => $validatedData['camera_longitude']
         ];
     }
-    public function updateCamera($uuid, $request) 
+    public function updateCamera($ulid, $request) 
     {
-
         $validator = Validator::make($request->all(), [
             'country' => 'required|numeric|between:1,15',
             'region' => 'required|numeric|between:1,85',
@@ -113,7 +107,7 @@ class RoadLens extends Model
             'source' => 'required|string',
             'isDeleted' => 'required|in:0,1',
             'ASC' => 'nullable|array',
-            'ASC.uuid' => 'uuid',
+            'ASC.ulid' => 'ulid',
             'ASC.speed' => 'numeric|min:10',
             'isASC' => 'numeric',
             'flags' => 'nullable|array',
@@ -132,16 +126,16 @@ class RoadLens extends Model
         }
         
         if(isset($validatedData['ASC'])) {
-            $nextCameraAndIdSection = AverageSpeedControl::addSection($uuid, $validatedData['ASC']);
+            $nextCameraAndIdSection = AverageSpeedControl::addSection($ulid, $validatedData['ASC']);
 
-            $validatedData['isASC'] = $nextCameraAndIdSection[1]; // id section
-            RoadLens::where('uuid', $nextCameraAndIdSection[0])->update([
+            $validatedData['isASC'] = $nextCameraAndIdSection[1]; 
+            RoadLens::where('ulid', $nextCameraAndIdSection[0])->update([
                 'isASC' => $nextCameraAndIdSection[1],
             ]);
         }
 
-        RoadLens::where('uuid', $uuid)->update([
-            'uuid' => $uuid,
+        RoadLens::where('ulid', $ulid)->update([
+            'ulid' => $ulid,
             'country' => $validatedData['country'],
             'region' => $validatedData['region'],
             'type' => $validatedData['type'],
@@ -167,11 +161,11 @@ class RoadLens extends Model
         ];
 
     }
-    public function deleteCamera($uuid) 
+    public function deleteCamera($ulid) 
     {
-        $cameraData = Roadlens::where('uuid', $uuid)->first();
+        $cameraData = Roadlens::where('ulid', $ulid)->first();
 
-        RoadLens::where('uuid', $uuid)->update([
+        RoadLens::where('ulid', $ulid)->update([
             'target_latitude' => $cameraData->camera_latitude,
             'target_longitude' => $cameraData->camera_longitude,
             'isDeleted' => 1

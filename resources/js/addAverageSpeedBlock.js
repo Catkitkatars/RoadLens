@@ -8,7 +8,7 @@ averageSpeedBtn.addEventListener('click', () => {
     if (averageSpeedBtn.checked) {
         let html = `
         <div class="input-box">
-            <input id="averageSpeedUuid" class="input-fixed" type="text" name="ASC[uuid]" required="">
+            <input id="averageSpeedUlid" class="input-fixed" type="text" name="ASC[ulid]" required="">
             <label>ulid следующей камеры</label>
         </div>
         <div class="input-box">

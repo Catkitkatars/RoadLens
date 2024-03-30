@@ -36,17 +36,20 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let layerGroups = {
     camerasLayer: L.layerGroup(),
+    averageSpeedLayer: L.layerGroup(),
     deletedsLayer: L.layerGroup(),
 }
 
 let layersControl = L.control.layers(null, {
     "Контроль ПДД": layerGroups.camerasLayer,
-    "Удалены": layerGroups.deletedsLayer
+    "КСС": layerGroups.averageSpeedLayer,
+    "Удалены": layerGroups.deletedsLayer,
 })
 
 layersControl.addTo(mapEdit);
 
 mapEdit.addLayer(layerGroups.camerasLayer);
+mapEdit.addLayer(layerGroups.averageSpeedLayer);
 mapEdit.addLayer(layerGroups.deletedsLayer);
 
 updateMapData(mapEdit, layerGroups);
@@ -73,7 +76,7 @@ let point = {
 
 if(angle.value) {
     point.properties.angle = parseInt(angle.value)
-    window.uuids.push(uuid.value);  
+    window.ulids.push(ulid.value);  
 }
 
 let marker = L.geotagPhoto.camera(point, options).addTo(mapEdit);

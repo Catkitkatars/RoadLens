@@ -1,1 +1,1 @@
-window.uuids = []
+window.ulids = []

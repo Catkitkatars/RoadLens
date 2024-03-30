@@ -11,27 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        
         Schema::create('russia', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
-            $table->string('country');
-            $table->string('region');
-            $table->string('type');
-            $table->string('model');
-            $table->string('camera_latitude');
-            $table->string('camera_longitude');
-            $table->string('target_latitude');
-            $table->string('target_longitude');
-            $table->string('direction');
-            $table->string('distance');
-            $table->string('angle');
-            $table->string('car_speed');
-            $table->string('truck_speed');
-            $table->string('isDeleted')->default('0');
-            $table->string('isASC');
+            $table->char('ulid', 26)->unique();
+            $table->integer('country');
+            $table->integer('region');
+            $table->integer('type');
+            $table->integer('model');
+            $table->float('camera_latitude', 8, 6);
+            $table->float('camera_longitude', 8, 6);
+            $table->float('target_latitude', 8, 6);
+            $table->float('target_longitude', 8, 6);
+            $table->integer('direction');
+            $table->integer('distance');
+            $table->integer('angle');
+            $table->integer('car_speed');
+            $table->integer('truck_speed');
+            $table->integer('isDeleted')->default('0');
+            $table->integer('isASC');
             $table->string('user')->default('admin');
             $table->string('source');
             $table->set('flags', [
+                '0',
                 '1', 
                 '2', 
                 '3',
@@ -42,7 +45,7 @@ return new class extends Migration
                 '8', 
                 '9',
                 '10'
-            ]);
+            ])->default('0');
             $table->timestamps();
         });
     }

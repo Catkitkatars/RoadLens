@@ -13,9 +13,9 @@ class AverageSpeedControl extends Model
 
     protected $fillable = ['data'];
 
-    public static function addSection($uuid, $section) {
+    public static function addSection($ulid, $section) {
         $validator = Validator::make($section, [
-            'uuid' => 'required|uuid',
+            'ulid' => 'required|ulid',
             'speed' => 'required|numeric|min:10',
         ]);
         
@@ -26,25 +26,33 @@ class AverageSpeedControl extends Model
         }
         $validatedData = $validator->validated();
 
-        $resultСurrentCamera = AverageSpeedControl::whereJsonContains('data', $uuid)->first();
-        
-        $resultNextCamera = AverageSpeedControl::whereJsonContains('data', $validatedData['uuid'])->first();
+        $ulidPartOfSectionOrNot = RoadLens::whereIn('ulid', [$ulid, $validatedData['ulid']])
+                                    ->where('isASC', '!=', 0)
+                                    ->get();
 
-        if(!$resultСurrentCamera && !$resultNextCamera) 
+        if($ulidPartOfSectionOrNot->isEmpty()) 
         {
-            $data = [
-                $uuid => $validatedData['speed'],
-                $validatedData['uuid'] => $validatedData['speed']
+            $section = [
+                [
+                    'ulid' => $ulid,
+                    'speed' => $validatedData['speed'],
+                ],
+                [
+                    'ulid' => $validatedData['ulid'],
+                    'speed' => $validatedData['speed'],
+                ]
             ];
-            $jsonData = json_encode($data);
 
+            $jsonSection = json_encode($section);
             $result = AverageSpeedControl::create([
-                'data' => $jsonData
+                'data' => $jsonSection
             ]);
-            return [$validatedData['uuid'], $result->id];
+            return [$validatedData['ulid'], $result->id];
         }
         else 
         {
+
+            dd($IsThereASection);
             return 'NIHERA';
         }
         // Проверяем есть ли вообще секции с участием этой камеры

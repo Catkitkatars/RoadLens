@@ -13,12 +13,15 @@ let zoomLevel = parseInt(urlParts[urlParts.length - 1])
 
 let layerGroups = {
     camerasLayer: L.layerGroup(),
+    averageSpeedLayer: L.layerGroup(),
     deletedsLayer: L.layerGroup(),
+    
 }
 
 let layersControl = L.control.layers(null, {
     "Контроль ПДД": layerGroups.camerasLayer,
-    "Удалены": layerGroups.deletedsLayer
+    "КСС": layerGroups.averageSpeedLayer,
+    "Удалены": layerGroups.deletedsLayer,
 })
 
 let map = initializeMap(latitude, longitude, zoomLevel);
@@ -27,6 +30,7 @@ updateURL(map);
 fetchDataAndDisplayMarkers(map,  layerGroups);
 layersControl.addTo(map);
 map.addLayer(layerGroups.camerasLayer);
+map.addLayer(layerGroups.averageSpeedLayer);
 map.addLayer(layerGroups.deletedsLayer);
 map.addControl(new CustomControl());
 updateMapData(map, layerGroups);

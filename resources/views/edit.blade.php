@@ -61,7 +61,7 @@
                 @csrf
                 <div class="name-block">
                     <div class="name-block_container">
-                        @if(isset($uuid)) 
+                        @if(isset($ulid)) 
                             <h3 class="name-block_h3">Редактировать</h3>
                             @if($isDeleted == 0) 
                                 <p style="text-align:center; color: green">Действующая</p>
@@ -74,9 +74,9 @@
                     </div>
                 </div>
                 <div class="flex-form">
-                    @if(isset($uuid)) 
+                    @if(isset($ulid)) 
                         <div class="edit-text-block mb-3">
-                            <p style="text-align: center; text-transform:uppercase;">uuid: <input style="text-align: center; border: none; background-color: transparent; outline: none; width: 100%" value="{{ $uuid }}" name="uuid" id='uuid'></p>
+                            <p style="text-align: center; text-transform:uppercase;">ulid: <input style="text-align: center; border: none; background-color: transparent; outline: none; width: 100%" value="{{ $ulid }}" name="ulid" id='ulid'></p>
                         </div>
                     @endif
                     <div class="select">
@@ -204,17 +204,17 @@
                     </div>
                         <div class="edit-submit">
 
-                        @if(isset($uuid))
+                        @if(isset($ulid))
                             @if($isDeleted == 0) 
-                                <button id="deleteBtn" type="submit" formaction="/edit/delete/{{ $uuid }}">
+                                <button id="deleteBtn" type="submit" formaction="/edit/delete/{{ $ulid }}">
                                     Удалить
                                 </button>
                                 
-                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $uuid }}">
+                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
                                     Обновить
                                 </button>
                             @else
-                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $uuid }}">
+                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
                                     Обновить
                                 </button>
                             @endif

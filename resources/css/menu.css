@@ -20,6 +20,23 @@
 *, ::before, ::after {
     box-sizing: border-box;
 }
+.leaflet-control {
+	border: none !important; 
+	background-clip: none !important;
+	background-color: #243b55 !important;
+}
+.leaflet-control span {
+	color: #fff !important;
+}
+.leaflet-control-zoom a {
+	border: none !important; 
+	background-clip: none !important;
+	background-color: #243b55 !important;
+	color: #fff !important;
+}
+.leaflet-control-zoom a:hover {
+	background-color: rgba(248, 249, 250, 0.483) !important;
+}
 
 
 h1,h2,h3 {
@@ -152,17 +169,21 @@ header {
 
 }
 .info-box {
-	padding: 10px
+	padding: 20px 10px 10px
 }
 .info-box_specification {
-	padding: 1em;
+	padding: 1.25em 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 .info-box_specification p {
 	color:#03e8f47e;
 	text-align: left;
 }
 .info-box_specification h5 {
-	padding-top: .5em;
+	/* padding-top: .5em; */
+	font-size: 18px;
 	text-align: right;
 }
 
@@ -178,6 +199,7 @@ header {
     height: 95vh !important;
 }
 .button-add {
+	margin: 0 !important;
 	background-color: #243b55;
 	transition: .3s;
 }
