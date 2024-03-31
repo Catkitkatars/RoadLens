@@ -261,6 +261,8 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
 
                     layerGroups.averageSpeedLayer.addLayer(polyline.line);
                     layerGroups.averageSpeedLayer.addLayer(polyline.arrow);
+
+                    
                     
                 }
                 continue;

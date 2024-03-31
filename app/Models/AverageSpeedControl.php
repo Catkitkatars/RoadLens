@@ -52,7 +52,7 @@ class AverageSpeedControl extends Model
         else 
         {
 
-            dd($IsThereASection);
+            dd(count($ulidPartOfSectionOrNot));
             return 'NIHERA';
         }
         // Проверяем есть ли вообще секции с участием этой камеры

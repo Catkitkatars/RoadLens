@@ -30,7 +30,8 @@ Route::post('/edit/update/{ulid}', [Map::class, 'update']);
 
 Route::post('/edit/delete/{ulid}', [Map::class, 'delete']);
 
-
 Route::get('/edit/{ulid}', [Map::class, 'showEditPage']);
+
+Route::post('/getCoordsCameras', [Map::class, 'getCoords']);
 
 // Route::get('/getCameras', [Map::class, 'getCamerasInBounds']);

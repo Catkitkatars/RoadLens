@@ -81,6 +81,8 @@ if(angle.value) {
 
 let marker = L.geotagPhoto.camera(point, options).addTo(mapEdit);
 
+
+
 let fieldOfView = marker.getFieldOfView();
 let cameraLatLng = marker.getCameraLatLng();
 
@@ -91,7 +93,7 @@ longitude.value = cameraLatLng.lng.toFixed(6);
 direction.value = Math.round(fieldOfView.properties.bearing);
 angle.value = Math.round(fieldOfView.properties.angle);
 distance.value = Math.round(fieldOfView.properties.distance);
-
+// console.log(marker)
 
 let inputChanged = false;
 

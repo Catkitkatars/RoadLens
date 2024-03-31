@@ -167,15 +167,38 @@
                         <input id="source" class="input-fixed" type="text" name="source" value="{{ $source ?? '' }}" required="">
                         <label>Источник</label>
                     </div>
+                    @if(isset($ASC))
+                        <div class="averageSpeedBlock" style="display:block">
+                    @else
+                        <div class="averageSpeedBlock" style="display:none">
+                        
+                    @endif
                     
-
-                    
-                    <div class="averageSpeedBlock" style="display:none">
                         <label style="padding-bottom: 10px">Средняя скорость:</label> 
                         <div class="averageSpeedInputs">
-
+                        
+                                @if(isset($ASC['previous']))
+                                <div class="input-box" style="padding: 0 0 10px 0">
+                                    <p>id предыдущей камеры:</p>
+                                    <p id="averageSpeedUlidPrevious">{{ $ASC['previous'] }}</p>
+                                </div>
+                                @endif
+                            <div class="input-box">
+                                <input id="averageSpeedUlidNext" class="input-fixed" type="text" value="{{ $ASC['next'] ?? '' }}" name="ASC[ulid]" required="">
+                                <label>id следующей камеры</label>
+                            </div>
+                            <div class="input-box">
+                                @if(isset($ASC['next']))
+                                    <input id="averageSpeed" class="input-fixed" type="text" value="{{ $ASC['speed'] ?? '' }}" name="ASC[speed]" required="">
+                                @else
+                                    <input id="averageSpeed" class="input-fixed" type="text" value="" name="ASC[speed]" required="">      
+                                @endif
+                                <label>Средняя скорость</label>
+                            </div>
+                        
                         </div>
                     </div>
+                    
                     <div class="edit-text-block">
                         <p>Модератор: {{ $user ?? '' }}</p>
                     </div>

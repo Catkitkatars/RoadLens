@@ -65,10 +65,58 @@ class Map extends Controller
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
 
-
     public function showEditPage($ulid) {
 
         $camera = (new RoadLens)->where('ulid', $ulid)->first();
+        $nextCameraId = null;
+        $previousCameraId = null;
+        $averageSpeed = null;
+        if($camera->isASC) {
+            $section = (new AverageSpeedControl())->where('id', $camera->isASC)->first();
+            $decodeSection = json_decode($section->data);
+
+    
+            $counter = 0;
+            foreach($decodeSection as $cameraInSection) {
+                if($cameraInSection->ulid === $camera->ulid) 
+                {
+                    $nextCameraId = $decodeSection[$counter + 1]->ulid ?? null;
+                    $previousCameraId = $decodeSection[$counter - 1]->ulid ?? null;
+                    $averageSpeed = $cameraInSection->speed;
+
+                }
+                $counter++;
+            }
+            return view('edit', [
+                'ulid' => $camera->ulid,
+                'country' => $camera->country,
+                'region' => $camera->region,
+                'type' => $camera->type,
+                'model' => $camera->model,
+                'latitude' => $camera->camera_latitude,
+                'longitude' => $camera->camera_longitude,
+                'target_latitude' => $camera->target_latitude,
+                'target_longitude' => $camera->target_longitude,
+                'direction' => $camera->direction,
+                'distance' => $camera->distance,
+                'angle' => $camera->angle,
+                'car_speed' => $camera->car_speed,
+                'truck_speed' => $camera->truck_speed,
+                'user' => $camera->user,
+                'isASC' => $camera->isASC,
+                'ASC' => [
+                    'previous' => $previousCameraId,
+                    'speed' => $averageSpeed,
+                    'next' => $nextCameraId,
+                ],
+                'isDeleted' => $camera->isDeleted,
+                'source' => $camera->source,
+                'flags' => explode(",", $camera->flags),
+                'flagDescriptions' => $this->flagsDescriprion,
+    
+    
+            ]);
+        }
 
         return view('edit', [
             'ulid' => $camera->ulid,
@@ -94,6 +142,8 @@ class Map extends Controller
 
 
         ]);
+
+        
     }
 
     public function getCamerasInBounds(Request $request){
@@ -106,8 +156,8 @@ class Map extends Controller
 
         foreach($camerasInBounds as $point) {
             if($point['isASC'] != '0') {
-                if(!in_array($point['isASC'], $sectionsIds)) {
-                    $sectionsIds[] = $point['isASC'];
+                if (!isset($sectionsIds[$point['isASC']])) {
+                    $sectionsIds[$point['isASC']] = $point['isASC'];
                 }
             }
             else 
@@ -151,8 +201,6 @@ class Map extends Controller
         }
 
         $sections = (new AverageSpeedControl())->whereIn('id', $sectionsIds)->select('data')->get();
-
-        $sectionsCameras = [];
 
         foreach($sections as $section) {
 
@@ -209,4 +257,5 @@ class Map extends Controller
         $cameras[] = $sectionsCameras;
         return response()->json($cameras);
     }
+
 }
