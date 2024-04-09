@@ -15,7 +15,7 @@ let layerGroups = {
     camerasLayer: L.layerGroup(),
     averageSpeedLayer: L.layerGroup(),
     deletedsLayer: L.layerGroup(),
-    
+
 }
 
 let layersControl = L.control.layers(null, {

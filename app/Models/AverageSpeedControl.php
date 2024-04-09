@@ -18,7 +18,7 @@ class AverageSpeedControl extends Model
             'ulid' => 'required|ulid',
             'speed' => 'required|numeric|min:10',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect('register')
                         ->withErrors($validator)
@@ -30,7 +30,7 @@ class AverageSpeedControl extends Model
                                     ->where('isASC', '!=', 0)
                                     ->get();
 
-        if($ulidPartOfSectionOrNot->isEmpty()) 
+        if($ulidPartOfSectionOrNot->isEmpty())
         {
             $section = [
                 [
@@ -49,13 +49,12 @@ class AverageSpeedControl extends Model
             ]);
             return [$validatedData['ulid'], $result->id];
         }
-        else 
+        else
         {
-
             dd(count($ulidPartOfSectionOrNot));
             return 'NIHERA';
         }
         // Проверяем есть ли вообще секции с участием этой камеры
-        // Если нет - добавляем новую секцию 
+        // Если нет - добавляем новую секцию
     }
 }

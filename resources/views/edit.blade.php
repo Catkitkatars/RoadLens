@@ -22,7 +22,7 @@
 
 <body>
     <header>
-        
+
         <div class="header-contaner">
         <div class="side_menu">
                 <div class="burger_box">
@@ -58,23 +58,32 @@
         <div class="container-map-edit">
             <section>
                 <form class="edit-form" method="POST" action="/edit/add">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 @csrf
                 <div class="name-block">
                     <div class="name-block_container">
-                        @if(isset($ulid)) 
+                        @if(isset($ulid))
                             <h3 class="name-block_h3">Редактировать</h3>
-                            @if($isDeleted == 0) 
+                            @if($isDeleted == 0)
                                 <p style="text-align:center; color: green">Действующая</p>
                             @else
                                 <p style="text-align:center; color: red">Удалена</p>
                             @endif
-                        @else 
+                        @else
                             <h3 class="name-block_h3">Добавить</h3>
                         @endif
                     </div>
                 </div>
                 <div class="flex-form">
-                    @if(isset($ulid)) 
+                    @if(isset($ulid))
                         <div class="edit-text-block mb-3">
                             <p style="text-align: center; text-transform:uppercase;">ulid: <input style="text-align: center; border: none; background-color: transparent; outline: none; width: 100%" value="{{ $ulid }}" name="ulid" id='ulid'></p>
                         </div>
@@ -82,7 +91,7 @@
                     <div class="select">
                         <label class="select-label" for="countries">Страна:</label><br>
                         <select name="country" id="selectCountries" class="">
-                        @if(isset($country)) 
+                        @if(isset($country))
                             <option value='{{ $country }}'></option>
                         @endif
                         </select>
@@ -91,7 +100,7 @@
                     <div class="select">
                         <label class="select-label" for="regions">Регион:</label><br>
                         <select name="region" id="selectRegions" class="">
-                        @if(isset($country)) 
+                        @if(isset($country))
                             <option value='{{ $region }}'></option>
                         @endif
                         </select>
@@ -99,7 +108,7 @@
                     <div class="select">
                         <label class="select-label" for="type">Тип:</label><br>
                         <select name="type" id="selectType" class="">
-                        @if(isset($country)) 
+                        @if(isset($country))
                             <option value='{{ $type }}'></option>
                         @endif
                         </select>
@@ -107,12 +116,12 @@
                     <div class="select">
                         <label class="select-label" for="model">Модель:</label><br>
                         <select name="model" id="selectModel" class="">
-                        @if(isset($country)) 
+                        @if(isset($country))
                             <option value='{{ $model }}'></option>
                         @endif
                         </select>
                     </div>
-                    
+
                     <div class="input-box">
                         <input id="latitude" class="input-fixed" type="text" name="camera_latitude" value="{{ $latitude ?? '' }}"required="">
                         <label>Широта</label>
@@ -171,12 +180,12 @@
                         <div class="averageSpeedBlock" style="display:block">
                     @else
                         <div class="averageSpeedBlock" style="display:none">
-                        
+
                     @endif
-                    
-                        <label style="padding-bottom: 10px">Средняя скорость:</label> 
+
+                        <label style="padding-bottom: 10px">Средняя скорость:</label>
                         <div class="averageSpeedInputs">
-                        
+
                                 @if(isset($ASC['previous']))
                                 <div class="input-box" style="padding: 0 0 10px 0">
                                     <p>id предыдущей камеры:</p>
@@ -184,21 +193,21 @@
                                 </div>
                                 @endif
                             <div class="input-box">
-                                <input id="averageSpeedUlidNext" class="input-fixed" type="text" value="{{ $ASC['next'] ?? '' }}" name="ASC[ulid]" required="">
+                                <input id="averageSpeedUlidNext" class="input-fixed" type="text" value="{{ $ASC['next'] ?? '' }}" name="ASC[ulid]" >
                                 <label>id следующей камеры</label>
                             </div>
                             <div class="input-box">
                                 @if(isset($ASC['next']))
-                                    <input id="averageSpeed" class="input-fixed" type="text" value="{{ $ASC['speed'] ?? '' }}" name="ASC[speed]" required="">
+                                    <input id="averageSpeed" class="input-fixed" type="text" value="{{ $ASC['speed'] ?? '' }}" name="ASC[speed]">
                                 @else
-                                    <input id="averageSpeed" class="input-fixed" type="text" value="" name="ASC[speed]" required="">      
+                                    <input id="averageSpeed" class="input-fixed" type="text" value="" name="ASC[speed]" >
                                 @endif
                                 <label>Средняя скорость</label>
                             </div>
-                        
+
                         </div>
                     </div>
-                    
+
                     <div class="edit-text-block">
                         <p>Модератор: {{ $user ?? '' }}</p>
                     </div>
@@ -208,7 +217,7 @@
                             @if(isset($flags))
                                 @foreach($flagDescriptions as $key => $description)
                                     <li>
-                                        <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}" 
+                                        <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}"
                                             {{ in_array($key, $flags) ? 'checked' : '' }}>
                                         <label for="checkbox{{ $key }}">{{ $description }}</label>
                                     </li>
@@ -220,7 +229,7 @@
                                         <label for="checkbox{{ $key }}">{{ $description }}</label>
                                     </li>
                                 @endforeach
-                                    
+
                             @endif
                             </ul>
                         </div>
@@ -228,11 +237,11 @@
                         <div class="edit-submit">
 
                         @if(isset($ulid))
-                            @if($isDeleted == 0) 
+                            @if($isDeleted == 0)
                                 <button id="deleteBtn" type="submit" formaction="/edit/delete/{{ $ulid }}">
                                     Удалить
                                 </button>
-                                
+
                                 <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
                                     Обновить
                                 </button>
@@ -241,12 +250,12 @@
                                     Обновить
                                 </button>
                             @endif
-                        @else 
+                        @else
                             <button type="submit">
                                 Добавить
                             </button>
                         @endif
-                            
+
                         </div>
                 </div>
             </form>
@@ -254,13 +263,13 @@
             <div id="map" class="map" style=""></div>
         </div>
     </main>
-    
-    
-    
+
+
+
 
     <footer></footer>
 
-   
+
     <script type="module" src="{{ asset('dist/js/edit.js') }}"></script>
 </body>
 </html>

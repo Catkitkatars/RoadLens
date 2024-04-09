@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CameraFormAddRequest;
+use App\Http\Requests\CameraFormUpdateRequest;
+use App\Services\Camera;
 use Illuminate\Http\Request;
 use App\Models\RoadLens;
 use App\Models\AverageSpeedControl;
@@ -23,12 +26,8 @@ class Map extends Controller
     ];
 
     public function __construct(
-        
-    ) {}
 
-    public function showTemplate() {
-        return $this->showMap(52.433690, 6.834420, 170);
-    }
+    ) {}
 
     public function showMap($latitude, $longitude, $zoom) {
         return view('home', [
@@ -47,25 +46,25 @@ class Map extends Controller
         ]);
     }
 
-    public function add(Request $request) {
-        $result = (new RoadLens())->addCamera($request);
+    public function add(CameraFormAddRequest $request) {
+        $result = (new Camera())->addCamera($request);
 
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
 
-    public function update($ulid, Request $request){
-        $result = (new RoadLens)->updateCamera($ulid, $request);
+    public function update(string $ulid, CameraFormUpdateRequest $request){
+        $result = (new Camera())->updateCamera($ulid, $request);
 
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
 
-    public function delete($ulid, Request $request){
-        $result = (new RoadLens())->deleteCamera($ulid);
+    public function delete(string $ulid){
+        $result = (new Camera())->deleteCamera($ulid);
 
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
 
-    public function showEditPage($ulid) {
+    public function showEditPage(string $ulid) {
 
         $camera = (new RoadLens)->where('ulid', $ulid)->first();
         $nextCameraId = null;
@@ -75,10 +74,9 @@ class Map extends Controller
             $section = (new AverageSpeedControl())->where('id', $camera->isASC)->first();
             $decodeSection = json_decode($section->data);
 
-    
             $counter = 0;
             foreach($decodeSection as $cameraInSection) {
-                if($cameraInSection->ulid === $camera->ulid) 
+                if($cameraInSection->ulid === $camera->ulid)
                 {
                     $nextCameraId = $decodeSection[$counter + 1]->ulid ?? null;
                     $previousCameraId = $decodeSection[$counter - 1]->ulid ?? null;
@@ -113,8 +111,6 @@ class Map extends Controller
                 'source' => $camera->source,
                 'flags' => explode(",", $camera->flags),
                 'flagDescriptions' => $this->flagsDescriprion,
-    
-    
             ]);
         }
 
@@ -139,123 +135,10 @@ class Map extends Controller
             'source' => $camera->source,
             'flags' => explode(",", $camera->flags),
             'flagDescriptions' => $this->flagsDescriprion,
-
-
         ]);
-
-        
     }
-
-    public function getCamerasInBounds(Request $request){
-        $camerasInBounds = (new RoadLens())->getCameras($request);
-
-        $cameras = [];
-
-        $sectionsIds = [];
-        $commonCameras = [];
-
-        foreach($camerasInBounds as $point) {
-            if($point['isASC'] != '0') {
-                if (!isset($sectionsIds[$point['isASC']])) {
-                    $sectionsIds[$point['isASC']] = $point['isASC'];
-                }
-            }
-            else 
-            {
-                $commonCameras[] = $point;
-            }
-        }
-
-
-        foreach($commonCameras as $camera) {
-            $cameraObject = [
-                'type' => 'Feature',
-                'properties' => [
-                    'ulid' => $camera['ulid'],
-                    'type' => $camera['type'],
-                    'model' => $camera['model'],
-                    'angle' => $camera['angle'],
-                    'car_speed' => $camera['car_speed'],
-                    'truck_speed' => $camera['truck_speed'],
-                    'user' => $camera['user'],
-                    'isDeleted' => $camera['isDeleted'],
-                    'isASC' => $camera['isASC'],
-                    'dateCreate' => date('d.m.Y H:i', strtotime($camera['created_at'])),
-                    'lastUpdate' => date('d.m.Y H:i', strtotime($camera['updated_at'])),
-                ],
-                'geometry' => [
-                    'type' => 'GeometryCollection',
-                    'geometries' => [
-                        [
-                            'type' => 'Point',
-                            'coordinates' => [$camera['camera_longitude'], $camera['camera_latitude']]
-                        ],
-                        [
-                            'type' => 'Point',
-                            'coordinates' => [$camera['target_longitude'], $camera['target_latitude']]
-                        ]
-                    ]
-                ]
-            ];
-            $cameras[] = $cameraObject;
-        }
-
-        $sections = (new AverageSpeedControl())->whereIn('id', $sectionsIds)->select('data')->get();
-
-        foreach($sections as $section) {
-
-            $groupSectionCameras = [];
-            $handledSection = json_decode($section['data'], true);
-
-            $counter = 0;
-            foreach($handledSection as $key => $value) {
-                $camera = (new RoadLens())->where('ulid', $handledSection[$key]['ulid'])->first();
-
-                $ulidPrevious = $handledSection[$counter - 1]['ulid'] ?? null;
-                $ulidNext = $handledSection[$counter + 1]['ulid'] ?? null;
-
-                $cameraObject = [
-                    'type' => 'Feature',
-                    'properties' => [
-                        'ulid' => $camera['ulid'],
-                        'type' => $camera['type'],
-                        'model' => $camera['model'],
-                        'angle' => $camera['angle'],
-                        'car_speed' => $camera['car_speed'],
-                        'truck_speed' => $camera['truck_speed'],
-                        'user' => $camera['user'],
-                        'isDeleted' => $camera['isDeleted'],
-                        'isASC' => $camera['isASC'],
-                        'ASC' => [
-                            'previous' => $ulidPrevious, 
-                            'speed' => $handledSection[$key]['speed'],
-                            'next' => $ulidNext,
-                        ],
-                        'dateCreate' => date('d.m.Y H:i', strtotime($camera['created_at'])),
-                        'lastUpdate' => date('d.m.Y H:i', strtotime($camera['updated_at'])),
-                    ],
-                    'geometry' => [
-                        'type' => 'GeometryCollection',
-                        'geometries' => [
-                            [
-                                'type' => 'Point',
-                                'coordinates' => [$camera['camera_longitude'], $camera['camera_latitude']]
-                            ],
-                            [
-                                'type' => 'Point',
-                                'coordinates' => [$camera['target_longitude'], $camera['target_latitude']]
-                            ]
-                        ]
-                    ]
-                ];
-                $groupSectionCameras[] = $cameraObject;
-                $counter++;
-            }
-            $sectionsCameras[] = $groupSectionCameras;
-        }
-
-        $cameras[] = $sectionsCameras;
-        return response()->json($cameras);
+    public function getCamerasInBounds(Request $request)
+    {
+        return (new Camera())->getCamerasInBounds($request);
     }
-
 }

@@ -16,7 +16,7 @@ use App\Http\Controllers\Map;
 
 
 
-Route::get('/', [Map::class, 'showTemplate']);
+Route::get('/', [Map::class, 'showMap']);
 
 Route::post('/getCameras', [Map::class, 'getCamerasInBounds']);
 
