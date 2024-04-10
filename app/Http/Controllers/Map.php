@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CameraFormAddRequest;
 use App\Http\Requests\CameraFormUpdateRequest;
-use App\Services\Camera;
+use App\Services\CameraService;
 use Illuminate\Http\Request;
 use App\Models\RoadLens;
 use App\Models\AverageSpeedControl;
@@ -25,9 +25,7 @@ class Map extends Controller
         10 => 'Контроль средней скорости',
     ];
 
-    public function __construct(
-
-    ) {}
+    public function __construct() {}
 
     public function showMap($latitude, $longitude, $zoom) {
         return view('home', [
@@ -47,19 +45,19 @@ class Map extends Controller
     }
 
     public function add(CameraFormAddRequest $request) {
-        $result = (new Camera())->addCamera($request);
+        $result = (new CameraService())->add($request);
 
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
 
     public function update(string $ulid, CameraFormUpdateRequest $request){
-        $result = (new Camera())->updateCamera($ulid, $request);
+        $result = (new CameraService())->update($ulid, $request);
 
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
 
     public function delete(string $ulid){
-        $result = (new Camera())->deleteCamera($ulid);
+        $result = (new CameraService())->delete($ulid);
 
         return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
     }
@@ -139,6 +137,6 @@ class Map extends Controller
     }
     public function getCamerasInBounds(Request $request)
     {
-        return (new Camera())->getCamerasInBounds($request);
+        return (new CameraService())->getCamerasInBounds($request);
     }
 }

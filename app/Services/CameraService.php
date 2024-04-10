@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Collection;
 
-class Camera
+class CameraService
 {
-    public function addCamera($request): array
+    public function add($request): array
     {
         $validatedData = $request->validated();
 
@@ -32,24 +32,22 @@ class Camera
             'lng' => $validatedData['camera_longitude']
         ];
     }
-    public function updateCamera(string $ulid, $request): array
+    public function update(string $ulid, $request): array
     {
         $validatedData = $request->validated();
-
-        if(isset($validatedData['flags'])) {
-            $arrayToString = implode(',', array_values($validatedData['flags']));
-            $validatedData['flags'] = $arrayToString;
-        }
-
         if(isset($validatedData['ASC'])) {
             if($validatedData['ASC']['ulid'] && $validatedData['ASC']['speed']) {
-                $nextCameraAndIdSection = AverageSpeedControl::addSection($ulid, $validatedData['ASC']);
+                $nextCameraAndIdSection = AverageSpeedControlService::addSection($ulid, $validatedData['ASC']);
 
                 $validatedData['isASC'] = $nextCameraAndIdSection[1];
                 RoadLens::where('ulid', $nextCameraAndIdSection[0])->update([
                     'isASC' => $nextCameraAndIdSection[1],
                 ]);
             }
+        }
+        if(isset($validatedData['flags'])) {
+            $arrayToString = implode(',', array_values($validatedData['flags']));
+            $validatedData['flags'] = $arrayToString;
         }
 
         RoadLens::where('ulid', $ulid)->update([
@@ -79,7 +77,7 @@ class Camera
         ];
 
     }
-    public function deleteCamera(string $ulid): array
+    public function delete(string $ulid): array
     {
         $cameraData = Roadlens::where('ulid', $ulid)->first();
 
@@ -95,16 +93,14 @@ class Camera
     }
     public function getCameras($request)
     {
-        $northEastLat = $request->input('northEastLat');
-        $northEastLng = $request->input('northEastLng');
-        $southWestLat = $request->input('southWestLat');
-        $southWestLng = $request->input('southWestLng');
+        $northEastLat = (float) $request->input('northEastLat');
+        $northEastLng = (float) $request->input('northEastLng');
+        $southWestLat = (float) $request->input('southWestLat');
+        $southWestLng = (float) $request->input('southWestLng');
 
-        $cameras = RoadLens::whereBetween('camera_latitude', [$southWestLat, $northEastLat])
-            ->whereBetween('camera_longitude', [$southWestLng, $northEastLng])
-            ->get();
-
-        return $cameras;
+        return RoadLens::whereBetween('camera_latitude', [$southWestLat, $northEastLat])
+                            ->whereBetween('camera_longitude', [$southWestLng, $northEastLng])
+                            ->get();
     }
     public function getCamerasInBounds($request){
         $camerasInBounds = $this->getCameras($request);

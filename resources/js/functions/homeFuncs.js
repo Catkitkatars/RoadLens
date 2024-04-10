@@ -1,4 +1,4 @@
-import L from 'leaflet'; 
+import L from 'leaflet';
 import 'leaflet-geotag-photo';
 import 'leaflet-polylinedecorator';
 import {options, cameraTypeAndModelData} from '../features/homeFeatures';
@@ -8,10 +8,11 @@ export function createPolyline(coords) {
     let polyline = L.polyline(coords, {
         color: 'red',
         opacity: .5,
-        weight: 3
+        weight: 3,
+        interactive: false,
     })
 
-    
+
     let decorator = L.polylineDecorator(polyline, {
         patterns: [
             {offset: 50, repeat: 50, symbol: L.Symbol.arrowHead({pixelSize: 8, polygon: false, pathOptions: {stroke: true, color: 'red', opacity: 0.5}})}
@@ -49,7 +50,7 @@ export function addInfoBlock(object, cameraTypeAndModelData) {
                 <p>Предыдущая:</p>
                 <p style="color:#ffffffc5">${object.properties.ASC.previous}</p>
             </div>
-            
+
             `;
         }
 
@@ -60,10 +61,10 @@ export function addInfoBlock(object, cameraTypeAndModelData) {
             ${ASCSpeed}
             ${ASCNext}
         </div>
-        
+
         `;
     }
-    
+
 
 
     return `
@@ -206,7 +207,7 @@ function addListeners(marker) {
 window.activePoligon = null;
 
 function checkUlid(array, ulid) {
-    return array.includes(ulid); 
+    return array.includes(ulid);
 }
 
 export function fetchDataAndDisplayMarkers(map, layerGroups) {
@@ -241,7 +242,7 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
             if(Array.isArray(cameras[cameraObj])) {
                 for(let sectionCamera in cameras[cameraObj]) {
                     let coordsForPolyline = [];
-                
+
                     cameras[cameraObj][sectionCamera].forEach(element => {
                         if(checkUlid(window.ulids, element.properties.ulid)){
                             return;
@@ -262,8 +263,8 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
                     layerGroups.averageSpeedLayer.addLayer(polyline.line);
                     layerGroups.averageSpeedLayer.addLayer(polyline.arrow);
 
-                    
-                    
+
+
                 }
                 continue;
             }
@@ -272,7 +273,7 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
             }
             window.ulids.push(cameras[cameraObj].properties.ulid)
 
-            if(cameras[cameraObj].properties.isDeleted == '0') 
+            if(cameras[cameraObj].properties.isDeleted == '0')
             {
                 options[0].cameraIcon = updateIcon(cameras[cameraObj].properties.type);
                 marker = L.geotagPhoto.camera(cameras[cameraObj], options[0])

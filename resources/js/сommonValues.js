@@ -1,1 +1,2 @@
-window.ulids = []
+window.ulids = [];
+window.polylines = [];
