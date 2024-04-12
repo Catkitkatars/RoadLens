@@ -104,7 +104,6 @@ class CameraService
     }
     public function getCamerasInBounds($request){
         $camerasInBounds = $this->getCameras($request);
-
         $cameras = [];
 
         $sectionsIds = [];
@@ -157,11 +156,11 @@ class CameraService
         }
 
         $sections = (new AverageSpeedControl())->whereIn('id', $sectionsIds)->select('data')->get();
-        $sectionsCameras = [];
-        foreach($sections as $section) {
 
-            $groupSectionCameras = [];
+        foreach($sections as $section) {
             $handledSection = json_decode($section['data'], true);
+
+
 
             $counter = 0;
             foreach($handledSection as $key => $value) {
@@ -204,13 +203,10 @@ class CameraService
                         ]
                     ]
                 ];
-                $groupSectionCameras[] = $cameraObject;
+                $cameras[] = $cameraObject;
                 $counter++;
             }
-            $sectionsCameras[] = $groupSectionCameras;
         }
-
-        $cameras[] = $sectionsCameras;
         return response()->json($cameras);
     }
 }

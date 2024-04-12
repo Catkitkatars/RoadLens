@@ -1,6 +1,6 @@
 import {cameraTypeAndModelData, options} from "../features/homeFeatures.js";
 import L from "leaflet";
-import {addInfoBlock, createPolyline, updateIcon} from "./homeFuncs.js";
+import {addInfoBlock, coordsAndUlidsSection, createPolyline, updateIcon} from "./homeFuncs.js";
 export function checkUlidEdit(array, ulid) {
     return array.includes(ulid);
 }
@@ -76,72 +76,59 @@ export function fetchDataAndDisplayMarkersEdit(map, editedCamera) {
         .then(cameras => {
             let marker = null;
             for (let cameraObj in cameras) {
-                if(Array.isArray(cameras[cameraObj])) {
-                    for(let sectionCamera in cameras[cameraObj]) {
-                        let sectionId = null;
-                        let coordsForPolyline = [];
-
-                        cameras[cameraObj][sectionCamera].forEach(element => {
-                            if(checkUlidEdit(window.ulids, element.properties.ulid)){
-                                return;
-                            }
-                            window.ulids.push(element.properties.ulid)
-                            if(editedCamera._fieldOfView.properties.ulid === element.properties.ulid) {
-                                coordsForPolyline.push(
-                                    [
-                                        editedCamera._fieldOfView.geometry.geometries[0].coordinates[1],
-                                        editedCamera._fieldOfView.geometry.geometries[0].coordinates[0]
-                                    ]
-                                );
-                                return;
-                            }
-                            options[0].cameraIcon = updateIcon(element.properties.type);
-                            marker = L.geotagPhoto.camera(element, options[0]);
-
-                            coordsForPolyline.push([marker.getCameraLatLng().lat, marker.getCameraLatLng().lng]);
-                            marker.properties = element.properties;
-                            marker.addTo(map);
-                            addListeners(marker);
-                        });
-                        sectionId = Number(cameras[cameraObj][sectionCamera][0].properties.isASC);
-                        let flag = false;
-                        for(let key in window.polylines) {
-                            if(Number(key) === sectionId) {
-                                flag = true;
-                            }
-                        }
-
-                        if(flag) {
-                            continue;
-                        }
-
-                        let polyline = createPolyline(coordsForPolyline)
-
-                        polyline.line.addTo(map);
-                        polyline.arrow.addTo(map);
-
-                        window.polylines[sectionId] = polyline;
-                    }
-                    continue;
-                }
-
-                if(editedCamera._fieldOfView.properties.ulid === cameras[cameraObj].properties.ulid) {
-                    continue;
-                }
                 if(checkUlidEdit(window.ulids, cameras[cameraObj].properties.ulid)){
                     continue;
                 }
 
                 window.ulids.push(cameras[cameraObj].properties.ulid)
 
-                if(cameras[cameraObj].properties.isDeleted == '0')
+                if(cameras[cameraObj].properties.isASC !== 0)
+                {
+                    let dataForASC = coordsAndUlidsSection(cameras, cameras[cameraObj].properties.ASC, cameras[cameraObj].properties.isASC)
+
+                    let coordsForPolyline = [
+                        [
+                            cameras[cameraObj].geometry.geometries[0].coordinates[1],
+                            cameras[cameraObj].geometry.geometries[0].coordinates[0]
+                        ],
+                        ...dataForASC[0]
+                    ];
+                    let chekedUlids = [cameras[cameraObj].properties.ulid, ...dataForASC[1]];
+
+                    for (let ulid in chekedUlids) {
+                        for(let key in cameras) {
+                            if(editedCamera._fieldOfView.properties.ulid === chekedUlids[ulid]) {
+                                continue;
+                            }
+                            if(cameras[key].properties.ulid === chekedUlids[ulid]) {
+                                options[0].cameraIcon = updateIcon(cameras[key].properties.type);
+                                marker = L.geotagPhoto.camera(cameras[key], options[0])
+                                marker.properties = cameras[key].properties;
+                                marker.addTo(map);
+                                addListeners(marker);
+                            }
+                        }
+                        window.ulids.push(chekedUlids[ulid]);
+                    }
+
+                    let polyline = createPolyline(coordsForPolyline)
+                    polyline.line.addTo(map);
+                    polyline.arrow.addTo(map);
+                    window.polylines[cameras[cameraObj].properties.isASC] = polyline;
+                    continue
+                }
+
+                window.ulids.push(cameras[cameraObj].properties.ulid)
+
+
+                if(cameras[cameraObj].properties.isDeleted === 0)
                 {
                     options[0].cameraIcon = updateIcon(cameras[cameraObj].properties.type);
                     marker = L.geotagPhoto.camera(cameras[cameraObj], options[0])
                     marker.properties = cameras[cameraObj].properties;
                     marker.addTo(map);
                 }
-                else if(cameras[cameraObj].properties.isDeleted == '1')
+                else if(cameras[cameraObj].properties.isDeleted === 1)
                 {
                     marker = L.geotagPhoto.camera(cameras[cameraObj], options[1])
                     marker.properties = cameras[cameraObj].properties;

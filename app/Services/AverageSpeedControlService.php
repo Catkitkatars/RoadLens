@@ -16,8 +16,8 @@ class AverageSpeedControlService
         $validatedData = $validator->validated();
 
         $ulidPartOfSectionOrNot = RoadLens::whereIn('ulid', [$ulid, $validatedData['ulid']])
-            ->where('isASC', '!=', 0)
-            ->get();
+                                                ->where('isASC', '!=', 0)
+                                                ->get();
 
         if($ulidPartOfSectionOrNot->isEmpty())
         {
@@ -38,12 +38,10 @@ class AverageSpeedControlService
             ]);
             return [$validatedData['ulid'], $result->id];
         }
-        else
-        {
-            dd(count($ulidPartOfSectionOrNot));
-            return 'NIHERA';
+
+        foreach ($ulidPartOfSectionOrNot as $section) {
+            dd($section->ulid);
         }
-        // Проверяем есть ли вообще секции с участием этой камеры
-        // Если нет - добавляем новую секцию
+
     }
 }

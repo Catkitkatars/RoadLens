@@ -85,179 +85,202 @@
                 <div class="flex-form">
                     @if(isset($ulid))
                         <div class="edit-text-block mb-3">
-                            <p style="text-align: center; text-transform:uppercase;">ulid: <input style="text-align: center; border: none; background-color: transparent; outline: none; width: 100%" value="{{ $ulid }}" name="ulid" id='ulid'></p>
+                            <p style="text-align: center; text-transform:uppercase;">id: <input style="text-align: center; border: none; background-color: transparent; outline: none; width: 100%" value="{{ $ulid }}" name="ulid" id='ulid'></p>
                         </div>
                     @endif
-                    <div class="select">
-                        <label class="select-label" for="countries">Страна:</label><br>
-                        <select name="country" id="selectCountries" class="">
-                        @if(isset($country))
-                            <option value='{{ $country }}'></option>
-                        @endif
-                        </select>
+                    <div style="border: 2px solid #03e9f42b; position: relative; padding: 30px 10px 0; margin: 25px 0 10px;">
+                    <div style="font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4";text-transform: uppercase; >Местоположение</div>
+                        <div class="select">
+                            <label class="select-label" for="countries">Страна:</label><br>
+                            <select name="country" id="selectCountries" class="">
+                                @if(isset($country))
+                                    <option value='{{ $country }}'></option>
+                                @endif
+                            </select>
 
-                    </div>
-                    <div class="select">
-                        <label class="select-label" for="regions">Регион:</label><br>
-                        <select name="region" id="selectRegions" class="">
-                        @if(isset($country))
-                            <option value='{{ $region }}'></option>
-                        @endif
-                        </select>
-                    </div>
-                    <div class="select">
-                        <label class="select-label" for="type">Тип:</label><br>
-                        <select name="type" id="selectType" class="">
-                        @if(isset($country))
-                            <option value='{{ $type }}'></option>
-                        @endif
-                        </select>
-                    </div>
-                    <div class="select">
-                        <label class="select-label" for="model">Модель:</label><br>
-                        <select name="model" id="selectModel" class="">
-                        @if(isset($country))
-                            <option value='{{ $model }}'></option>
-                        @endif
-                        </select>
-                    </div>
-
-                    <div class="input-box">
-                        <input id="latitude" class="input-fixed" type="text" name="camera_latitude" value="{{ $latitude ?? '' }}"required="">
-                        <label>Широта</label>
-                    </div>
-                    <div class="input-box">
-                        <input id="longitude"class="input-fixed" type="text" name="camera_longitude" value="{{ $longitude ?? '' }}" required="">
-                        <label>Долгота</label>
-                    </div>
-
-                    <div class="input-box" style="display: none">
-                        <input id="target_latitude" class="input-fixed" type="text" name="target_latitude" value="{{ $target_latitude ?? '' }}" required="">
-                        <label>Широта таргет</label>
-                    </div>
-                    <div class="input-box" style="display: none">
-                        <input id="target_longitude"class="input-fixed" type="text" name="target_longitude" value="{{ $target_longitude ?? '' }}" required="">
-                        <label>Долгота таргет</label>
-                    </div>
-                    <div class="input-box" style="display: none">
-                        <input id="isASC" class="input-fixed" type="text" name="isASC" value="{{ $isASC ?? '0' }}" required="">
-                        <label>КСС</label>
-                    </div>
-                    <div class="input-box" style="display: none">
-                        <input id="isDeleted" class="input-fixed" type="text" name="isDeleted" value="{{ $isDeleted ?? '0' }}" required="">
-                        <label>Удалена</label>
-                    </div>
-                    <div class="input-box">
-                        <input id="direction" class="input-fixed" type="text" name="direction" value="{{ $direction ?? '' }}" required="">
-                        <label>Направление</label>
-                    </div>
-                    <div class="input-box">
-                        <input id="distance"class="input-fixed" type="text" name="distance" value="{{ $distance ?? '' }}" required="">
-                        <label>Длина луча</label>
-                    </div>
-                    <div class="input-box">
-                        <input id="angle" class="input-fixed" type="text" name="angle" value="{{ $angle ?? '' }}" required="">
-                        <label>Ширина луча</label>
-                    </div>
-                    <div class="">
-                        <label>Скорость:</label>
-                        <div class="speed-box">
-                            <div class="input-box">
-                                <input id="speed-car" class="input-fixed" type="text" name="car_speed" value="{{ $car_speed ?? '' }}" required="">
-                                <label>Легковой</label>
-                            </div>
-                            <div class="input-box">
-                                <input id="speed-truck" class="input-fixed" type="text" name="truck_speed" value="{{ $truck_speed ?? '' }}" required="">
-                                <label>Грузовой</label>
-                            </div>
                         </div>
-                    </div>
-                    <div class="input-box">
-                        <input id="source" class="input-fixed" type="text" name="source" value="{{ $source ?? '' }}" required="">
-                        <label>Источник</label>
-                    </div>
-                    @if(isset($ASC))
-                        <div class="averageSpeedBlock" style="display:block">
-                    @else
-                        <div class="averageSpeedBlock" style="display:none">
-
-                    @endif
-
-                        <label style="padding-bottom: 10px">Средняя скорость:</label>
-                        <div class="averageSpeedInputs">
-
-                                @if(isset($ASC['previous']))
-                                <div class="input-box" style="padding: 0 0 10px 0">
-                                    <p>id предыдущей камеры:</p>
-                                    <p id="averageSpeedUlidPrevious">{{ $ASC['previous'] }}</p>
-                                </div>
+                        <div class="select">
+                            <label class="select-label" for="regions">Регион:</label><br>
+                            <select name="region" id="selectRegions" class="">
+                                @if(isset($country))
+                                    <option value='{{ $region }}'></option>
                                 @endif
-                            <div class="input-box">
-                                <input id="averageSpeedUlidNext" class="input-fixed" type="text" value="{{ $ASC['next'] ?? '' }}" name="ASC[ulid]" >
-                                <label>id следующей камеры</label>
-                            </div>
-                            <div class="input-box">
-                                @if(isset($ASC['next']))
-                                    <input id="averageSpeed" class="input-fixed" type="text" value="{{ $ASC['speed'] ?? '' }}" name="ASC[speed]">
-                                @else
-                                    <input id="averageSpeed" class="input-fixed" type="text" value="" name="ASC[speed]" >
-                                @endif
-                                <label>Средняя скорость</label>
-                            </div>
+                            </select>
+                        </div>
+                        <div class="input-box">
+                            <input id="latitude" class="input-fixed" type="text" name="camera_latitude" value="{{ $latitude ?? '' }}"required="">
+                            <label>Широта</label>
+                        </div>
+                        <div class="input-box">
+                            <input id="longitude"class="input-fixed" type="text" name="camera_longitude" value="{{ $longitude ?? '' }}" required="">
+                            <label>Долгота</label>
+                        </div>
 
+                        <div class="input-box" style="display: none">
+                            <input id="target_latitude" class="input-fixed" type="text" name="target_latitude" value="{{ $target_latitude ?? '' }}" required="">
+                            <label>Широта таргет</label>
+                        </div>
+                        <div class="input-box" style="display: none">
+                            <input id="target_longitude"class="input-fixed" type="text" name="target_longitude" value="{{ $target_longitude ?? '' }}" required="">
+                            <label>Долгота таргет</label>
                         </div>
                     </div>
 
-                    <div class="edit-text-block">
-                        <p>Модератор: {{ $user ?? '' }}</p>
-                    </div>
-                    <div class="chekbox-block">
-                        <div class="container">
-                            <ul class="ks-cboxtags">
-                            @if(isset($flags))
-                                @foreach($flagDescriptions as $key => $description)
-                                    <li>
-                                        <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}"
-                                            {{ in_array($key, $flags) ? 'checked' : '' }}>
-                                        <label for="checkbox{{ $key }}">{{ $description }}</label>
-                                    </li>
-                                @endforeach
-                            @elseif(isset($flagDescriptions))
-                                @foreach($flagDescriptions as $key => $description)
-                                    <li>
-                                        <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}">
-                                        <label for="checkbox{{ $key }}">{{ $description }}</label>
-                                    </li>
-                                @endforeach
-
+                    <div style="border: 2px solid #03e9f42b; position: relative; padding: 30px 10px 0; margin: 25px 0 10px;">
+                        <div style="font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4";text-transform: uppercase; >Характеристики</div>
+                        <div class="select">
+                            <label class="select-label" for="type">Тип:</label><br>
+                            <select name="type" id="selectType" class="">
+                            @if(isset($type))
+                                <option value='{{ $type }}'></option>
                             @endif
-                            </ul>
+                            </select>
+                        </div>
+                        <div class="select">
+                            <label class="select-label" for="model">Модель:</label><br>
+                            <select name="model" id="selectModel" class="">
+                            @if(isset($model))
+                                <option value='{{ $model }}'></option>
+                            @endif
+                            </select>
+                        </div>
+                        <div class="input-box" style="display: none">
+                            <input id="isASC" class="input-fixed" type="text" name="isASC" value="{{ $isASC ?? '0' }}" required="">
+                            <label>КСС</label>
+                        </div>
+                        <div class="input-box" style="display: none">
+                            <input id="isDeleted" class="input-fixed" type="text" name="isDeleted" value="{{ $isDeleted ?? '0' }}" required="">
+                            <label>Удалена</label>
+                        </div>
+                        <div class="input-box">
+                            <input id="direction" class="input-fixed" type="text" name="direction" value="{{ $direction ?? '' }}" required="">
+                            <label>Направление</label>
+                        </div>
+                        <div class="input-box">
+                            <input id="distance"class="input-fixed" type="text" name="distance" value="{{ $distance ?? '' }}" required="">
+                            <label>Длина луча</label>
+                        </div>
+                        <div class="input-box">
+                            <input id="angle" class="input-fixed" type="text" name="angle" value="{{ $angle ?? '' }}" required="">
+                            <label>Ширина луча</label>
+                        </div>
+                        <div class="">
+                            <label>Скорость:</label>
+                            <div class="speed-box">
+                                <div class="input-box">
+                                    <input id="speed-car" class="input-fixed" type="text" name="car_speed" value="{{ $car_speed ?? '' }}" required="">
+                                    <label>Легковой</label>
+                                </div>
+                                <div class="input-box">
+                                    <input id="speed-truck" class="input-fixed" type="text" name="truck_speed" value="{{ $truck_speed ?? '' }}" required="">
+                                    <label>Грузовой</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="border: 2px solid #03e9f42b; position: relative; padding: 30px 10px 10px; margin: 25px 0 10px;">
+                        <div style="font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4";text-transform: uppercase; >Дополнительный контроль</div>
+                        <div class="chekbox-block">
+                            <div class="container">
+                                <ul class="ks-cboxtags">
+                                    @if(isset($flags))
+                                        @foreach($flagDescriptions as $key => $description)
+                                            <li>
+                                                <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}"
+                                                    {{ in_array($key, $flags) ? 'checked' : '' }}>
+                                                <label for="checkbox{{ $key }}">{{ $description }}</label>
+                                            </li>
+                                        @endforeach
+                                    @elseif(isset($flagDescriptions))
+                                        @foreach($flagDescriptions as $key => $description)
+                                            <li>
+                                                <input type="checkbox" id="checkbox{{ $key }}" name="flags[{{ $key }}]" value="{{ $key }}">
+                                                <label for="checkbox{{ $key }}">{{ $description }}</label>
+                                            </li>
+                                        @endforeach
+
+                                    @endif
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                        @if(isset($ASC))
+                            <div class="averageSpeedBlock" style="display:block; border: 2px solid #03e9f42b; position: relative; padding: 30px 10px 10px; margin: 25px 0 10px;">
+                        @else
+                            <div class="averageSpeedBlock" style="display:none; border: 2px solid #03e9f42b; position: relative; padding: 30px 10px 10px; margin: 25px 0 10px;">
+                        @endif
+                            <div style="display:block; font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4; ">Секционный контроль</div>
+                                <div class="averageSpeedInputs">
+
+                                    @if(isset($ASC['previous']))
+                                        <div class="input-box" style="padding: 0 0 10px 0;">
+                                            <p>id предыдущей камеры:</p>
+                                            <p id="averageSpeedUlidPrevious">{{ $ASC['previous'] }}</p>
+                                        </div>
+                                    @endif
+                                    <div class="input-box">
+                                        <input id="averageSpeedUlidNext" class="input-fixed" type="text" value="{{ $ASC['next'] ?? '' }}" name="ASC[ulid]" >
+                                        <label>id следующей камеры</label>
+                                    </div>
+                                    <div class="input-box">
+                                        @if(isset($ASC['next']))
+                                            <input id="averageSpeed" class="input-fixed" type="text" value="{{ $ASC['speed'] ?? '' }}" name="ASC[speed]">
+                                        @else
+                                            <input id="averageSpeed" class="input-fixed" type="text" value="" name="ASC[speed]" >
+                                        @endif
+                                        <label>Средняя скорость</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+
+                        <div style="border: 2px solid #03e9f42b; position: relative; padding: 30px 10px 10px; margin: 25px 0 10px;">
+                        <div style="font-size: .9rem; font-family: Russo One, sans-serif; position: absolute; top:-18px; left:1.25em; padding:5px; color:#1B2A3F; background-color: #03e9f4";text-transform: uppercase; >Информация</div>
+                            <div class="input-box">
+                                <input id="source" class="input-fixed" type="text" name="source" value="{{ $source ?? '' }}" required="">
+                                <label>Источник</label>
+                            </div>
+                            <div class="edit-text-block">
+                                <p>Модератор: {{ $user ?? '' }}</p>
+                            </div>
+                        </div>
+
+
+
+
+
+
                         <div class="edit-submit">
 
-                        @if(isset($ulid))
-                            @if($isDeleted == 0)
-                                <button id="deleteBtn" type="submit" formaction="/edit/delete/{{ $ulid }}">
-                                    Удалить
-                                </button>
+                            @if(isset($ulid))
+                                @if($isDeleted == 0)
+                                    <button id="deleteBtn" type="submit" formaction="/edit/delete/{{ $ulid }}">
+                                        Удалить
+                                    </button>
 
-                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
-                                    Обновить
-                                </button>
+                                    <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
+                                        Обновить
+                                    </button>
+                                @else
+                                    <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
+                                        Обновить
+                                    </button>
+                                @endif
                             @else
-                                <button id="updateBtn" type="submit" formaction="/edit/update/{{ $ulid }}">
-                                    Обновить
+                                <button type="submit">
+                                    Добавить
                                 </button>
                             @endif
-                        @else
-                            <button type="submit">
-                                Добавить
-                            </button>
-                        @endif
 
                         </div>
                 </div>
+
             </form>
             </section>
             <div id="map" class="map" style=""></div>

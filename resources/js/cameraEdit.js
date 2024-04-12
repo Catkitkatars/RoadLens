@@ -37,10 +37,15 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="#">RoadLens</a>'
 }).addTo(mapEdit);
 
+
+let angleElement = document.getElementById('angle');
+
+let angleValue = angleElement.value ? angleElement.value : 20;
+
 let point = {
     type: 'Feature',
     properties: {
-        angle: 20,
+        angle: parseInt(angleValue),
     },
     geometry: {
         type: 'GeometryCollection',
@@ -65,9 +70,10 @@ if(ulid && ulid.value !== null) {
 
 let marker = L.geotagPhoto.camera(point, options).addTo(mapEdit);
 
-
 let fieldOfView = marker.getFieldOfView();
 let cameraLatLng = marker.getCameraLatLng();
+
+
 
 target_latitude.value = marker.getTargetLatLng().lat.toFixed(6);
 target_longitude.value = marker.getTargetLatLng().lng.toFixed(6);
@@ -190,30 +196,32 @@ marker.on('input', function (event) {
 
         let newCoords = []
 
-        for(let coords in window.polylines[isASC.value].line.getLatLngs()) {
-
-            if(
-                previousLat === window.polylines[isASC.value].line.getLatLngs()[coords].lat
-                &&
-                previousLng === window.polylines[isASC.value].line.getLatLngs()[coords].lng
-            )
-            {
+        if(isASC.value !== '0'){
+            for(let coords in window.polylines[isASC.value].line.getLatLngs()) {
+                if(
+                    previousLat === window.polylines[isASC.value].line.getLatLngs()[coords].lat
+                    &&
+                    previousLng === window.polylines[isASC.value].line.getLatLngs()[coords].lng
+                )
+                {
+                    newCoords.push([
+                        parseFloat(newLat),
+                        parseFloat(newLng)
+                    ]);
+                    continue;
+                }
                 newCoords.push([
-                    parseFloat(newLat),
-                    parseFloat(newLng)
+                    parseFloat(window.polylines[isASC.value].line.getLatLngs()[coords].lat),
+                    parseFloat(window.polylines[isASC.value].line.getLatLngs()[coords].lng)
                 ]);
-                continue;
             }
-            newCoords.push([
-                parseFloat(window.polylines[isASC.value].line.getLatLngs()[coords].lat),
-                parseFloat(window.polylines[isASC.value].line.getLatLngs()[coords].lng)
-            ]);
+            window.polylines[isASC.value].line.remove();
+            window.polylines[isASC.value].arrow.remove();
+            window.polylines[isASC.value] = createPolyline(newCoords);
+            window.polylines[isASC.value].line.addTo(mapEdit);
+            window.polylines[isASC.value].arrow.addTo(mapEdit);
         }
-        window.polylines[isASC.value].line.remove();
-        window.polylines[isASC.value].arrow.remove();
-        window.polylines[isASC.value] = createPolyline(newCoords);
-        window.polylines[isASC.value].line.addTo(mapEdit);
-        window.polylines[isASC.value].arrow.addTo(mapEdit);
+
 
 
         target_latitude.value = marker.getTargetLatLng().lat.toFixed(6);
@@ -292,15 +300,3 @@ document.addEventListener('DOMContentLoaded', function() {
 fetchDataAndDisplayMarkersEdit(mapEdit, marker);
 updateMapDataEdit(mapEdit, marker)
 
-let coords = [
-    [60.563875, 56.816962],
-    [60.568118, 56.820435]
-]
-
-
-// let polyline = L.polyline(coords, {
-//     color: 'red',
-//     opacity: .5,
-//     weight: 3,
-// }).addTo(mapEdit);
-// window.polylines.push(polyline);

@@ -42,7 +42,7 @@ input::placeholder {
 .flex-form {
     display: flex;
     flex-direction: column;
-    
+
 }
 
 .flex-block  {
@@ -148,7 +148,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
 .flex-form .input-box {
     position: relative;
 }
-  
+
   .flex-form .input-box input {
     width: 100%;
     padding: 10px 0;
@@ -171,7 +171,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     pointer-events: none;
     transition: .5s;
   }
-  
+
   .flex-form .input-box input:focus ~ label,
   .flex-form .input-box input:valid ~ label {
     top: -20px;
@@ -189,7 +189,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     display: flex;
     justify-content: flex-end;
   }
-  
+
   .edit-submit a {
     position: relative;
     display: inline-block;
@@ -203,7 +203,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     margin-top: 40px;
     letter-spacing: 4px
   }
-  
+
   .edit-submit a:hover {
     background: #03e9f4;
     color: #fff;
@@ -237,12 +237,12 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
                 0 0 50px #03e9f4,
                 0 0 100px #03e9f4;
   }
-  
+
   .edit-submit a span {
     position: absolute;
     display: block;
   }
-  
+
   .edit-submit a span:nth-child(1) {
     top: 0;
     left: -100%;
@@ -251,7 +251,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     background: linear-gradient(90deg, transparent, #03e9f4);
     animation: btn-anim1 1s linear infinite;
   }
-  
+
   @keyframes btn-anim1 {
     0% {
       left: -100%;
@@ -260,7 +260,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
       left: 100%;
     }
   }
-  
+
   .edit-submit a span:nth-child(2) {
     top: -100%;
     right: 0;
@@ -270,7 +270,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     animation: btn-anim2 1s linear infinite;
     animation-delay: .25s
   }
-  
+
   @keyframes btn-anim2 {
     0% {
       top: -100%;
@@ -279,7 +279,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
       top: 100%;
     }
   }
-  
+
   .edit-submit a span:nth-child(3) {
     bottom: 0;
     right: -100%;
@@ -289,7 +289,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     animation: btn-anim3 1s linear infinite;
     animation-delay: .5s
   }
-  
+
   @keyframes btn-anim3 {
     0% {
       right: -100%;
@@ -298,7 +298,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
       right: 100%;
     }
   }
-  
+
   .edit-submit a span:nth-child(4) {
     bottom: -100%;
     left: 0;
@@ -308,7 +308,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     animation: btn-anim4 1s linear infinite;
     animation-delay: .75s
   }
-  
+
 @keyframes btn-anim4 {
 0% {
     bottom: -100%;
@@ -321,7 +321,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     color:#fff;
     opacity: .5;
 }
-  
+
   .select select {
     background-color: rgba(0,0,0,.5);
     color: #adadad;
@@ -334,7 +334,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     outline: none;
     margin-bottom: 1em;
   }
-  
+
   .select::before {
     position: absolute;
     top: 0;
@@ -348,12 +348,12 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     background-color: rgba(0, 0, 0, 0.2);
     pointer-events: none;
   }
-  
+
   .select:hover::before {
     color: rgba(255, 255, 255, 0.6);
     background-color: rgba(0, 0, 0, 0.2);
   }
-  
+
   .select select option {
     padding: 30px;
   }
@@ -396,7 +396,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
 }
 
 .averageSpeedBlock {
-  margin: 10px 0;
-  padding: 10px 10px 0 20px;
-  box-shadow: inset 0 0 10px 5px rgba(0, 0, 0, 0.5);
+  /*margin: 10px 0;*/
+  /*padding: 10px 10px 0 20px;*/
+  /*box-shadow: inset 0 0 10px 5px rgba(0, 0, 0, 0.5);*/
 }

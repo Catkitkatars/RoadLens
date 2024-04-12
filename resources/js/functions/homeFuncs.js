@@ -210,6 +210,8 @@ function checkUlid(array, ulid) {
     return array.includes(ulid);
 }
 
+
+
 export function fetchDataAndDisplayMarkers(map, layerGroups) {
     let bounds = map.getBounds();
 
@@ -239,41 +241,45 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
     .then(cameras => {
         let marker = null;
         for (let cameraObj in cameras) {
-            if(Array.isArray(cameras[cameraObj])) {
-                for(let sectionCamera in cameras[cameraObj]) {
-                    let coordsForPolyline = [];
-
-                    cameras[cameraObj][sectionCamera].forEach(element => {
-                        if(checkUlid(window.ulids, element.properties.ulid)){
-                            return;
-                        }
-                        window.ulids.push(element.properties.ulid)
-
-                        options[0].cameraIcon = updateIcon(element.properties.type);
-                        marker = L.geotagPhoto.camera(element, options[0]);
-
-                        coordsForPolyline.push([marker.getCameraLatLng().lat, marker.getCameraLatLng().lng]);
-                        marker.properties = element.properties;
-                        layerGroups.averageSpeedLayer.addLayer(marker);
-                        addListeners(marker);
-                    });
-
-                    let polyline = createPolyline(coordsForPolyline)
-
-                    layerGroups.averageSpeedLayer.addLayer(polyline.line);
-                    layerGroups.averageSpeedLayer.addLayer(polyline.arrow);
-
-
-
-                }
-                continue;
-            }
             if(checkUlid(window.ulids, cameras[cameraObj].properties.ulid)){
                 continue;
             }
             window.ulids.push(cameras[cameraObj].properties.ulid)
 
-            if(cameras[cameraObj].properties.isDeleted == '0')
+            if(cameras[cameraObj].properties.isASC !== 0)
+            {
+                let dataForASC = coordsAndUlidsSection(cameras, cameras[cameraObj].properties.ASC, cameras[cameraObj].properties.isASC)
+
+                let coordsForPolyline = [
+                    [
+                        cameras[cameraObj].geometry.geometries[0].coordinates[1],
+                        cameras[cameraObj].geometry.geometries[0].coordinates[0]
+                    ],
+                    ...dataForASC[0]
+                ];
+                let chekedUlids = [cameras[cameraObj].properties.ulid, ...dataForASC[1]];
+
+
+                for (let ulid in chekedUlids) {
+                    for(let key in cameras) {
+                        if(cameras[key].properties.ulid === chekedUlids[ulid]) {
+                            options[0].cameraIcon = updateIcon(cameras[key].properties.type);
+                            marker = L.geotagPhoto.camera(cameras[key], options[0])
+                            marker.properties = cameras[key].properties;
+                            layerGroups.camerasLayer.addLayer(marker);
+                            addListeners(marker);
+                        }
+                    }
+                    window.ulids.push(chekedUlids[ulid]);
+                }
+
+                let polyline = createPolyline(coordsForPolyline)
+                layerGroups.averageSpeedLayer.addLayer(polyline.line);
+                layerGroups.averageSpeedLayer.addLayer(polyline.arrow);
+                continue
+            }
+
+            if(cameras[cameraObj].properties.isDeleted === 0)
             {
                 options[0].cameraIcon = updateIcon(cameras[cameraObj].properties.type);
                 marker = L.geotagPhoto.camera(cameras[cameraObj], options[0])
@@ -281,7 +287,7 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
                 layerGroups.camerasLayer.addLayer(marker);
 
             }
-            else if(cameras[cameraObj].properties.isDeleted == '1')
+            else if(cameras[cameraObj].properties.isDeleted === 1)
             {
                 marker = L.geotagPhoto.camera(cameras[cameraObj], options[1])
                 marker.properties = cameras[cameraObj].properties;
@@ -295,6 +301,36 @@ export function fetchDataAndDisplayMarkers(map, layerGroups) {
         console.error('Error:', error);
     });
 }
+export function coordsAndUlidsSection(points, sectionData, sectionNumber) {
+    let coordsForPolyline = [];
+    let ulids = [];
+    for(let point in points) {
+        if(points[point].properties.isASC !== sectionNumber) {
+            continue;
+        }
+        if(points[point].properties.ulid === sectionData.next) {
+            coordsForPolyline.push(
+                [
+                    points[point].geometry.geometries[0].coordinates[1],
+                    points[point].geometry.geometries[0].coordinates[0]
+                ]
+            );
+            ulids.push(points[point].properties.ulid);
+
+            if(points[point].properties.ASC.next !== null) {
+                let nextASC = coordsAndUlidsSection(points, points[point].properties.ASC, sectionNumber);
+                coordsForPolyline.push(...nextASC[0])
+                ulids.push(...nextASC[1])
+            }
+            else
+            {
+                return [coordsForPolyline, ulids];
+            }
+        }
+
+    }
+}
+
 
 
 export function updateMapData(map, layerGroups) {
