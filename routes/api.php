@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Map;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Тест
+
+// Routes /api/*getAll
+Route::post('/getAll', [Map::class, 'getAll']);
+Route::post('/add', [Map::class, 'add']);
+Route::post('/points', [Map::class, 'getPointsInBounds']);
+
+

@@ -15,7 +15,7 @@ services:
     container_name: RL_nginx
 
 
-  app: 
+  app:
     build:
       context: .
       dockerfile: _docker/app/Dockerfile
@@ -26,7 +26,7 @@ services:
     container_name: RL_app
 
 
-  database: 
+  database:
     image: mysql:8.0
     restart: always
     volumes:

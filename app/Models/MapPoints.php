@@ -12,26 +12,24 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-class RoadLens extends Model
+class MapPoints extends Model
 {
     use HasFactory;
 
-    protected $table = 'russia';
+    protected $table = 'map_points';
     protected $fillable = [
         'ulid',
         'country',
         'region',
         'type',
         'model',
-        'camera_latitude',
-        'camera_longitude',
-        'target_latitude',
-        'target_longitude',
+        'lat',
+        'lng',
         'direction',
         'distance',
         'angle',
-        'car_speed',
-        'truck_speed',
+        'carSpeed',
+        'truckSpeed',
         'source',
         'isASC',
         'flags',

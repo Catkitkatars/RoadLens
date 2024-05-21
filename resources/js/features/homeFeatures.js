@@ -2,7 +2,7 @@ import {getCenterAndZoom} from '../functions/homeFuncs.js';
 
 export let CustomControl = L.Control.extend({
     options: {
-        position: 'bottomright' 
+        position: 'bottomright'
     },
 
     onAdd: function(map) {
@@ -17,13 +17,13 @@ export let CustomControl = L.Control.extend({
 
     function updateLink(map) {
 
-        let link = 'http://localhost:8080/edit/' + getCenterAndZoom(map);
+        let link = '#'
 
         button.setAttribute('href', link);
     }
 
         updateLink(map);
-        return container; 
+        return container;
     }
 });
 
@@ -86,7 +86,7 @@ export let pointsCollection = {
     }
 }
 
-export let options = 
+export let options =
 [
     {
         draggable: false,
@@ -101,7 +101,7 @@ export let options =
             iconSize: [0, 0],
             iconAnchor: [16, 16]
         }),
-        
+
         angleIcon: L.icon({
             iconUrl: '/dist/images/marker.svg',
             iconSize: [0, 0],
@@ -134,7 +134,7 @@ export let options =
             iconSize: [0, 0],
             iconAnchor: [16, 16]
         }),
-        
+
         angleIcon: L.icon({
             iconUrl: '/dist/images/marker.svg',
             iconSize: [0, 0],
@@ -160,7 +160,7 @@ export let options =
 
 
 export let cameraTypeAndModelData = [
-    [   
+    [
         { value: '', label: '--Выберите тип--' },
         { value: '1', label: 'Безрадарный(не шумит)' },
         { value: '2', label: 'Радарный(шумит)' },

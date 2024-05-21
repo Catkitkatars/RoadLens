@@ -4,139 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CameraFormAddRequest;
 use App\Http\Requests\CameraFormUpdateRequest;
-use App\Services\CameraService;
+use App\Services\PointService;
 use Illuminate\Http\Request;
-use App\Models\RoadLens;
+use Illuminate\Http\JsonResponse;
 use App\Models\AverageSpeedControl;
 
 class Map extends Controller
 {
 
-    private array $flagsDescriprion = [
-        1 => 'Подтвержден',
-        2 => 'В спину',
-        3 => 'Разметка',
-        4 => 'Пешеходный',
-        5 => 'Обочина',
-        6 => 'Автобусная',
-        7 => 'Контроль остановки',
-        8 => 'Грузовой контроль',
-        9 => 'Ремень/Телефон',
-        10 => 'Контроль средней скорости',
-    ];
+    public function __construct(
+        private readonly PointService $pointService
+    ) {}
 
-    public function __construct() {}
-
-    public function showMap($latitude, $longitude, $zoom) {
-        return view('home', [
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'zoom' => $zoom
-        ]);
-    }
-
-    public function showAddPage($latitude, $longitude, $zoom) {
-        return view('edit', [
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'zoom' => $zoom,
-            'flagDescriptions' => $this->flagsDescriprion,
-        ]);
-    }
-
-    public function add(CameraFormAddRequest $request) {
-        $result = (new CameraService())->add($request);
-
-        return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
-    }
-
-    public function update(string $ulid, CameraFormUpdateRequest $request){
-        $result = (new CameraService())->update($ulid, $request);
-
-        return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
-    }
-
-    public function delete(string $ulid){
-        $result = (new CameraService())->delete($ulid);
-
-        return redirect("/map/" . $result['lat'] . '/' . $result['lng'] . '/16' );
-    }
-
-    public function showEditPage(string $ulid) {
-
-        $camera = (new RoadLens)->where('ulid', $ulid)->first();
-        $nextCameraId = null;
-        $previousCameraId = null;
-        $averageSpeed = null;
-        if($camera->isASC) {
-            $section = (new AverageSpeedControl())->where('id', $camera->isASC)->first();
-            $decodeSection = json_decode($section->data);
-
-            $counter = 0;
-            foreach($decodeSection as $cameraInSection) {
-                if($cameraInSection->ulid === $camera->ulid)
-                {
-                    $nextCameraId = $decodeSection[$counter + 1]->ulid ?? null;
-                    $previousCameraId = $decodeSection[$counter - 1]->ulid ?? null;
-                    $averageSpeed = $cameraInSection->speed;
-
-                }
-                $counter++;
-            }
-            return view('edit', [
-                'ulid' => $camera->ulid,
-                'country' => $camera->country,
-                'region' => $camera->region,
-                'type' => $camera->type,
-                'model' => $camera->model,
-                'latitude' => $camera->camera_latitude,
-                'longitude' => $camera->camera_longitude,
-                'target_latitude' => $camera->target_latitude,
-                'target_longitude' => $camera->target_longitude,
-                'direction' => $camera->direction,
-                'distance' => $camera->distance,
-                'angle' => $camera->angle,
-                'car_speed' => $camera->car_speed,
-                'truck_speed' => $camera->truck_speed,
-                'user' => $camera->user,
-                'isASC' => $camera->isASC,
-                'ASC' => [
-                    'previous' => $previousCameraId,
-                    'speed' => $averageSpeed,
-                    'next' => $nextCameraId,
-                ],
-                'isDeleted' => $camera->isDeleted,
-                'source' => $camera->source,
-                'flags' => explode(",", $camera->flags),
-                'flagDescriptions' => $this->flagsDescriprion,
-            ]);
-        }
-
-        return view('edit', [
-            'ulid' => $camera->ulid,
-            'country' => $camera->country,
-            'region' => $camera->region,
-            'type' => $camera->type,
-            'model' => $camera->model,
-            'latitude' => $camera->camera_latitude,
-            'longitude' => $camera->camera_longitude,
-            'target_latitude' => $camera->target_latitude,
-            'target_longitude' => $camera->target_longitude,
-            'direction' => $camera->direction,
-            'distance' => $camera->distance,
-            'angle' => $camera->angle,
-            'car_speed' => $camera->car_speed,
-            'truck_speed' => $camera->truck_speed,
-            'user' => $camera->user,
-            'isASC' => $camera->isASC,
-            'isDeleted' => $camera->isDeleted,
-            'source' => $camera->source,
-            'flags' => explode(",", $camera->flags),
-            'flagDescriptions' => $this->flagsDescriprion,
-        ]);
-    }
-    public function getCamerasInBounds(Request $request)
+    public function add(Request $request): JsonResponse
     {
-        return (new CameraService())->getCamerasInBounds($request);
+        $data = $request->all();
+
+        $result = $this->pointService->add($data);
+
+        return new JsonResponse([
+            "success" => true,
+            'data' => $result,
+        ]);
+    }
+
+    public function getPointsInBounds(Request $request): JsonResponse
+    {
+        $result = $this->pointService->getCamerasInBounds($request);
+
+        return new JsonResponse([
+            "success" => true,
+            'data' => $result,
+        ]);
     }
 }

@@ -12,39 +12,34 @@ return new class extends Migration
     public function up(): void
     {
 
-        
-        Schema::create('russia', function (Blueprint $table) {
+        Schema::create('map_points', function (Blueprint $table) {
             $table->id();
             $table->char('ulid', 26)->unique();
             $table->integer('country');
             $table->integer('region');
             $table->integer('type');
             $table->integer('model');
-            $table->float('camera_latitude', 8, 6);
-            $table->float('camera_longitude', 8, 6);
-            $table->float('target_latitude', 8, 6);
-            $table->float('target_longitude', 8, 6);
+            $table->float('lat', 8, 6);
+            $table->float('lng', 8, 6);
             $table->integer('direction');
             $table->integer('distance');
             $table->integer('angle');
-            $table->integer('car_speed');
-            $table->integer('truck_speed');
-            $table->integer('isDeleted')->default('0');
+            $table->integer('carSpeed');
+            $table->integer('truckSpeed');
+            $table->integer('status')->default(0);
             $table->integer('isASC');
             $table->string('user')->default('admin');
-            $table->string('source');
+            $table->string('source')->default('Источник');
             $table->set('flags', [
                 '0',
-                '1', 
-                '2', 
+                '1',
+                '2',
                 '3',
-                '4', 
-                '5', 
+                '4',
+                '5',
                 '6',
-                '7', 
-                '8', 
-                '9',
-                '10'
+                '7',
+                '8',
             ])->default('0');
             $table->timestamps();
         });
@@ -55,6 +50,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('russia');
+        Schema::dropIfExists('map_points');
     }
 };

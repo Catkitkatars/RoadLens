@@ -18,7 +18,10 @@ use App\Http\Controllers\Map;
 
 Route::get('/', [Map::class, 'showMap']);
 
-Route::post('/getCameras', [Map::class, 'getCamerasInBounds']);
+
+
+// delete this!
+
 
 Route::get('/map/{latitude}/{longitude}/{zoom}', [Map::class, 'showMap']);
 
