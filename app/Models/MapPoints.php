@@ -28,6 +28,7 @@ class MapPoints extends Model
         'direction',
         'distance',
         'angle',
+        'status',
         'carSpeed',
         'truckSpeed',
         'source',

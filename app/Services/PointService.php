@@ -16,56 +16,61 @@ class PointService
         private readonly PointRepository $pointRepository,
         private readonly AverageSpeedRepository $averageSpeedRepository
     ) {}
-    public function add($data)
+    public function add(array $point): bool
     {
-        if (isset($data['flags']) && is_array($data['flags'])) {
-            $data['flags'] = implode(',', $data['flags']);
+        if (isset($point['flags']) && is_array($point['flags'])) {
+            $point['flags'] = implode(',', $point['flags']);
         }
-        $data['ulid'] = Str::ulid();
+        $point['ulid'] = Str::ulid();
 
-        if(isset($data['ASC']))
+        if(isset($point['ASC']))
         {
-            $numberSectionNextPoint = $this->pointRepository->getASCNumber($data['ASC']['next']);
+            $numberSectionNextPoint = $this->pointRepository->getSectionId($point['ASC']['next']);
 
             if($numberSectionNextPoint !== 0) {
                 $sectionNextPoint = $this->averageSpeedRepository->getSection($numberSectionNextPoint);
 
-                if($sectionNextPoint[0]['ulid'] === $data['ASC']['next']) {
+                if($sectionNextPoint[0]['ulid'] === $point['ASC']['next']) {
                     $newSection = [
                         [
-                            'ulid' => $data['ulid'],
-                            'speed' => $data['ASC']['speed']
+                            'ulid' => $point['ulid'],
+                            'speed' => $point['ASC']['speed']
                         ],
                         ...$sectionNextPoint
                     ];
 
                     $this->averageSpeedRepository->updateSection($numberSectionNextPoint, $newSection);
-                    $data['isASC'] = $numberSectionNextPoint;
+                    $point['isASC'] = $numberSectionNextPoint;
                 }
             }
 
             if($numberSectionNextPoint === 0) {
                 $section = [
                         [
-                            'ulid' => $data['ulid'],
-                            'speed' => $data['ASC']['speed'],
+                            'ulid' => $point['ulid'],
+                            'speed' => $point['ASC']['speed'],
                         ],
                         [
-                            'ulid' => $data['ASC']['next'],
-                            'speed' => $data['ASC']['speed'],
+                            'ulid' => $point['ASC']['next'],
+                            'speed' => $point['ASC']['speed'],
                         ]
                     ];
 
                 $sectionId = $this->averageSpeedRepository->createSection($section);
-                $this->pointRepository->setIsASC($data['ASC']['next'], $sectionId);
-                $data['isASC'] = $sectionId;
+                $this->pointRepository->setSectionId($point['ASC']['next'], $sectionId);
+                $point['isASC'] = $sectionId;
             }
-            // Нужно проверить точка финиш является ли частью секции?
-            // Если является и точка находится не в середине секции - добавляем к секции частью которой является точка финиш.
-            // Если нет - создаем секцию из текущей точки и точки финиш
-            // В любом случае - возврат id секции для подставновки в isASC текущей точки.
         }
-        return $this->pointRepository->addNewPoint($data);
+        return $this->pointRepository->addPoint($point);
+    }
+
+    public function update($point): bool
+    {
+        if (isset($point['flags']) && is_array($point['flags'])) {
+            $point['flags'] = implode(',', $point['flags']);
+        }
+
+        return $this->pointRepository->updatePoint($point);
     }
 
     public function getCameras($request)

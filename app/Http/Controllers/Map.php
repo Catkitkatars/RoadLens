@@ -18,12 +18,24 @@ class Map extends Controller
 
     public function add(Request $request): JsonResponse
     {
-        $data = $request->all();
+        $point = $request->all();
 
-        $result = $this->pointService->add($data);
+        $result = $this->pointService->add($point);
 
         return new JsonResponse([
-            "success" => true,
+            'success' => true,
+            'data' => $result,
+        ]);
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        $point = $request->all();
+
+        $result = $this->pointService->update($point);
+
+        return new JsonResponse([
+            'success' => true,
             'data' => $result,
         ]);
     }

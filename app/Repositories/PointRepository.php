@@ -7,9 +7,9 @@ use App\Models\MapPoints;
 
 class PointRepository
 {
-    public function addNewPoint(array $data): bool
+    public function addPoint(array $point): bool
     {
-        $result = MapPoints::create($data);
+        $result = MapPoints::create($point);
 
         if($result)
         {
@@ -19,7 +19,33 @@ class PointRepository
         return false;
     }
 
-    public function getASCNumber(string $id): ?int
+    public function updatePoint(array $point): bool
+    {
+        $result = MapPoints::where('ulid', $point['ulid'])->update([
+            'country' => $point['country'],
+            'region' => $point['region'],
+            'type' => $point['type'],
+            'model' => $point['model'],
+            'lat' => $point['lat'],
+            'lng' => $point['lng'],
+            'direction' => $point['direction'],
+            'distance' => $point['distance'],
+            'angle' => $point['angle'],
+            'carSpeed' => $point['carSpeed'],
+            'truckSpeed' => $point['truckSpeed'],
+            'status' => $point['status'],
+            'isASC' => $point['isASC'],
+            'flags' => $point['flags'],
+        ]);
+
+        if($result)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function getSectionId(string $id): ?int
     {
         $point = MapPoints::where('ulid', $id)->first();
 
@@ -30,7 +56,7 @@ class PointRepository
         return null;
     }
 
-    public function setIsASC(string $ulid, string $isASC): void
+    public function setSectionId(string $ulid, string $isASC): void
     {
         MapPoints::where('ulid', $ulid)->update(['isASC' => $isASC]);
     }

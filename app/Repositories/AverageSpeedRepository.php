@@ -8,7 +8,14 @@ use App\Models\AverageSpeedControl;
 
 class AverageSpeedRepository
 {
-    public function createSection($sectionData)
+    public function getSection(int $sectionId): array
+    {
+        $result = AverageSpeedControl::where('id', $sectionId)->first();
+
+        return json_decode($result->data, true);
+    }
+
+    public function createSection(array $sectionData): ?int
     {
         $arrayToJson = json_encode($sectionData);
 
@@ -20,13 +27,6 @@ class AverageSpeedRepository
             return $result->id;
         }
         return null;
-    }
-
-    public function getSection(int $sectionId): array
-    {
-        $result = AverageSpeedControl::where('id', $sectionId)->first();
-
-        return json_decode($result->data, true);
     }
 
     public function updateSection(int $sectionId, array $section): bool

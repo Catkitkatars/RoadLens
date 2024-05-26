@@ -20,6 +20,7 @@ use App\Http\Controllers\Map;
 // Routes /api/*getAll
 Route::post('/getAll', [Map::class, 'getAll']);
 Route::post('/add', [Map::class, 'add']);
+Route::post('update', [Map::class, 'update']);
 Route::post('/points', [Map::class, 'getPointsInBounds']);
 
 

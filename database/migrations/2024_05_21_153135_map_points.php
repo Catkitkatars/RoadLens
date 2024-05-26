@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('angle');
             $table->integer('carSpeed');
             $table->integer('truckSpeed');
-            $table->integer('status')->default(0);
+            $table->integer('status');
             $table->integer('isASC');
             $table->string('user')->default('admin');
             $table->string('source')->default('Источник');
