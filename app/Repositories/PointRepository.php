@@ -11,12 +11,12 @@ class PointRepository
     {
         $result = MapPoints::create($point);
 
-        if($result)
-        {
-            return true;
-        }
+        return (bool) $result;
+    }
 
-        return false;
+    public function getPoint(string $ulid): array
+    {
+        return MapPoints::where('ulid', $ulid)->first();
     }
 
     public function updatePoint(array $point): bool
@@ -38,16 +38,13 @@ class PointRepository
             'flags' => $point['flags'],
         ]);
 
-        if($result)
-        {
-            return true;
-        }
-        return false;
+
+        return (bool) $result;
     }
 
-    public function getSectionId(string $id): ?int
+    public function getSectionId(string $ulid): ?int
     {
-        $point = MapPoints::where('ulid', $id)->first();
+        $point = MapPoints::where('ulid', $ulid)->first();
 
         if($point)
         {
@@ -59,5 +56,12 @@ class PointRepository
     public function setSectionId(string $ulid, string $isASC): void
     {
         MapPoints::where('ulid', $ulid)->update(['isASC' => $isASC]);
+    }
+
+    public function updateASCs(array $ulids, int $isASC): bool
+    {
+        $result = MapPoints::whereIn('ulid', $ulids)->update(['isASC' => $isASC]);
+
+        return (bool) $result;
     }
 }

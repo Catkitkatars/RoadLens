@@ -34,8 +34,16 @@ class Map extends Controller
 
         $result = $this->pointService->update($point);
 
+        if($result)
+        {
+            return new JsonResponse([
+                'success' => true,
+                'data' => $result,
+            ]);
+        }
+
         return new JsonResponse([
-            'success' => true,
+            'success' => false,
             'data' => $result,
         ]);
     }

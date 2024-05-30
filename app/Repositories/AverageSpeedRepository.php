@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\MapPoints;
 use App\Models\AverageSpeedControl;
+use Illuminate\Support\Facades\DB;
 
 
 class AverageSpeedRepository
@@ -34,10 +35,14 @@ class AverageSpeedRepository
         $arrayToJson = json_encode($section);
         $result = AverageSpeedControl::where('id', $sectionId)->update(['data' => $arrayToJson]);
 
-        if($result) {
-            return true;
-        }
-        return false;
+        return (bool) $result;
+    }
+
+    public function deleteSections(array $ids): bool
+    {
+        $result = AverageSpeedControl::whereIn('id', $ids)->delete();
+
+        return (bool) $result;
     }
 
 }
